@@ -1,54 +1,18 @@
 "use client";
 import { Heading } from "@/components/heading";
-import { Text } from "@/components/text";
-import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAudioStream } from "@/hooks/audio-stream";
 
 export default function Home() {
-  const [text, setText] = useState<string[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  const ws = new WebSocket("ws://localhost:8000/ws/transcribe/");
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [text]);
-
-  ws.onmessage = (event) => {
-    console.log(event.data);
-    setText((prev) => [event.data]);
-  };
-
-  console.log(text);
-  // async function start() {
-  //   const stream = await navigator.mediaDevices.getUserMedia({
-  //     audio: true,
-  //   });
-  //   const context = new AudioContext({ sampleRate: 16000 }); // Amazon requires 16kHz
-  //   const source = context.createMediaStreamSource(stream);
-  //   const processor = context.createScriptProcessor(4096, 1, 1);
-
-  //   source.connect(processor);
-  //   processor.connect(context.destination);
-
-  //   processor.onaudioprocess = function (e) {
-  //     const input = e.inputBuffer.getChannelData(0); // Float32 [-1.0, 1.0]
-  //     const pcm = new Int16Array(input.length);
-
-  //     for (let i = 0; i < input.length; i++) {
-  //       let s = Math.max(-1, Math.min(1, input[i]));
-  //       pcm[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
-  //     }
-
-  //     if (ws.readyState === WebSocket.OPEN) {
-  //       ws.send(pcm.buffer); // send as binary
-  //     }
-  //   };
-  // }
-
-  // useEffect(() => {
-  //   start();
-  // }, []);
+  const {
+    isRecording,
+    handleToggleRecording,
+    formatTime,
+    audioBlob,
+    recordingTime,
+  } = useAudioStream();
 
   return (
     <main>
@@ -60,7 +24,7 @@ export default function Home() {
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
         <TabsContent value="live">
-          <div className="p-4 md:p-6">
+          {/* <div className="p-4 md:p-6">
             {text.map((t, i) => {
               return (
                 <>
@@ -70,7 +34,13 @@ export default function Home() {
               );
             })}
             <div ref={bottomRef} />
-          </div>
+          </div> */}
+
+          <Button onClick={handleToggleRecording}>
+            {isRecording ? "Stop Recording" : "Start Recording"}
+          </Button>
+          <p>Recording Time: {formatTime(recordingTime)}</p>
+          <p>Audio Blob: {audioBlob?.size}</p>
         </TabsContent>
         <TabsContent value="history">Change your password here.</TabsContent>
       </Tabs>
