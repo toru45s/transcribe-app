@@ -36,8 +36,15 @@ export const useAudioStream = () => {
       };
 
       socketRef.current.onmessage = (event) => {
-        console.log(event.data);
-        setTranscript(event.data);
+        const data = JSON.parse(event.data);
+
+        if (data.type === "transcription") {
+          console.log("Transcript:", data.transcript);
+          setTranscript(data.transcript);
+        } else if (data.type === "system") {
+          console.log("System:", data.message);
+          setTranscript(data.message);
+        }
       };
     }
 
@@ -112,6 +119,7 @@ export const useAudioStream = () => {
       const input = e.inputBuffer.getChannelData(0); // Float32 [-1.0, 1.0]
       const int16 = float32ToInt16(input); // Int16 PCM
       if (socketRef.current?.readyState === WebSocket.OPEN) {
+        console.log("🎧 Sending buffer of size:", int16.buffer.byteLength);
         socketRef.current.send(int16.buffer); // Send raw PCM
       }
     };
@@ -124,23 +132,6 @@ export const useAudioStream = () => {
     sourceRef.current = source;
 
     setIsRecording(true);
-
-    // if (mediaRecorder && mediaRecorder.state === "inactive") {
-    //   mediaRecorder.start(500); // every 500ms
-    //   setIsRecording(true);
-    //   setRecordingTime(0);
-    //   setAudioBlob(null);
-
-    //   timerRef.current = setInterval(() => {
-    //     setRecordingTime((prevTime) => {
-    //       if (prevTime >= RECORDING_MAX_DURATION - 1) {
-    //         stopRecording();
-    //         return RECORDING_MAX_DURATION;
-    //       }
-    //       return prevTime + 1;
-    //     });
-    //   }, 1000);
-    // }
   };
 
   const float32ToInt16 = (buffer: Float32Array): Int16Array => {
