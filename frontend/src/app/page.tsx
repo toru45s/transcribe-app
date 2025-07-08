@@ -4,9 +4,14 @@ import { Button } from "@/components/ui/button";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAudioStream } from "@/hooks/audio-stream";
+import { useRef } from "react";
+import { Text } from "@/components/text";
 
 export default function Home() {
+  const bottomRef = useRef<HTMLDivElement>(null);
+
   const {
+    transcript,
     isRecording,
     handleToggleRecording,
     formatTime,
@@ -24,17 +29,10 @@ export default function Home() {
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
         <TabsContent value="live">
-          {/* <div className="p-4 md:p-6">
-            {text.map((t, i) => {
-              return (
-                <>
-                  <Text key={i}>{t}</Text>
-                  {i === text.length - 1 && <div ref={bottomRef} />}
-                </>
-              );
-            })}
+          <div className="p-4 md:p-6">
+            <Text>{transcript}</Text>
             <div ref={bottomRef} />
-          </div> */}
+          </div>
 
           <Button onClick={handleToggleRecording}>
             {isRecording ? "Stop Recording" : "Start Recording"}
