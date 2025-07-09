@@ -1,11 +1,21 @@
+import { cn } from "@/lib/utils";
+
 type Props = {
-  ref?: React.RefObject<HTMLParagraphElement | null>;
+  isStrong?: boolean;
+  className?: string;
   children: React.ReactNode;
 };
 
-export function Text({ ref, children }: Props) {
+export function Text({ isStrong, className, children }: Props) {
   return (
-    <p ref={ref} className="text-2xl font-semibold tracking-tight">
+    <p
+      className={cn(
+        isStrong
+          ? "text-2xl font-semibold tracking-tight"
+          : "leading-7",
+        className
+      )}
+    >
       {children}
     </p>
   );

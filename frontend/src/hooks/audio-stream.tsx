@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 export const useAudioStream = () => {
   const socketRef = useRef<WebSocket | null>(null);
   const [transcript, setTranscript] = useState("");
+  const [transcripts, setTranscripts] = useState<string[]>([]);
 
   const [isRecording, setIsRecording] = useState(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
@@ -41,9 +42,11 @@ export const useAudioStream = () => {
         if (data.type === "transcription") {
           console.log("Transcript:", data.transcript);
           setTranscript(data.transcript);
+          setTranscripts((prev) => [...prev, data.transcript]);
         } else if (data.type === "system") {
           console.log("System:", data.message);
           setTranscript(data.message);
+          setTranscripts((prev) => [...prev, data.message]);
         }
       };
     }
@@ -169,6 +172,7 @@ export const useAudioStream = () => {
   };
   return {
     transcript,
+    transcripts,
     isRecording,
     handleToggleRecording,
     formatTime,

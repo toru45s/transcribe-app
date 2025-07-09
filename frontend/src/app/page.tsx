@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAudioStream } from "@/hooks/audio-stream";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Text } from "@/components/text";
 import { Play, Pause } from "lucide-react";
+import { TranscriptionContainer } from "@/components/transcription-container";
 
 export default function Home() {
   const bottomRef = useRef<HTMLDivElement>(null);
-
   const {
     transcript,
+    transcripts,
     isRecording,
     handleToggleRecording,
     formatTime,
@@ -20,9 +21,15 @@ export default function Home() {
     recordingTime,
   } = useAudioStream();
 
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [transcripts]);
+
   return (
-    <main className="relative p-4 md:p-6 h-screen flex flex-col">
-      <div className="fixed top-0 left-0 right-0 m-auto flex justify-between items-center pt-4 px-4">
+    <main className="relative px-4 pb-4 md:px-6 md:pb-6 min-h-screen flex flex-col">
+      <div className="sticky top-0 flex justify-between items-center py-4">
         <Heading isItalic className="text-[#FF4F00]">
           Subtitles
         </Heading>
@@ -40,20 +47,25 @@ export default function Home() {
           )}
         </Button>
       </div>
-      <Tabs defaultValue="live" className="mt-4 flex-1">
-        <TabsList className="fixed bottom-2 right-0 left-0 m-auto">
+      <Tabs defaultValue="live" className="flex-1">
+        <TabsList className="fixed bottom-4 right-0 left-0 m-auto">
           <TabsTrigger value="live">Live</TabsTrigger>
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
-        <TabsContent value="live">
-          <div className="flex flex-col justify-center items-center h-full">
-            <div className="flex flex-col items-center justify-center h-[80vh] overflow-y-auto">
-              <Text>{transcript}</Text>
-              <div ref={bottomRef} />
-            </div>
-          </div>
+        <TabsContent
+          value="live"
+          className="flex flex-col justify-center items-center"
+        >
+          <Text isStrong className="relative top-[-35px]">
+            {transcript}
+          </Text>
         </TabsContent>
-        <TabsContent value="history">TODO: History</TabsContent>
+        <TabsContent value="history" className="flex flex-col">
+          {transcripts.map((transcript, index) => (
+            <Text key={index}>{transcript}</Text>
+          ))}
+          <div ref={bottomRef} />
+        </TabsContent>
       </Tabs>
     </main>
   );
