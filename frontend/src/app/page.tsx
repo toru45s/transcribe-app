@@ -7,7 +7,6 @@ import { useAudioStream } from "@/hooks/audio-stream";
 import { useEffect, useRef } from "react";
 import { Text } from "@/components/text";
 import { Play, Pause } from "lucide-react";
-import { TranscriptionContainer } from "@/components/transcription-container";
 
 export default function Home() {
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -33,6 +32,7 @@ export default function Home() {
         <Heading isItalic className="text-[#FF4F00]">
           Subtitles
         </Heading>
+        <Button variant="link">Login</Button>
 
         <Button
           variant="outline"
