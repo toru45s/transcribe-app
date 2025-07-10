@@ -40,13 +40,13 @@ export const useAudioStream = () => {
         const data = JSON.parse(event.data);
 
         if (data.type === "transcription") {
-          console.log("Transcript:", data.transcript);
+          if (!data.is_partial) {
+            setTranscripts((prev) => [...prev, data.transcript]);
+          }
           setTranscript(data.transcript);
-          setTranscripts((prev) => [...prev, data.transcript]);
         } else if (data.type === "system") {
-          console.log("System:", data.message);
-          setTranscript(data.message);
-          setTranscripts((prev) => [...prev, data.message]);
+          setTranscript(`${data.message}`);
+          setTranscripts((prev) => [...prev, `System: ${data.message}`]);
         }
       };
     }
@@ -70,13 +70,9 @@ export const useAudioStream = () => {
 
           mediaRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
-              console.log(socketRef.current?.readyState);
-              console.log(WebSocket.OPEN);
               if (socketRef.current?.readyState === WebSocket.OPEN) {
-                console.log("Here4");
                 socketRef.current.send(event.data);
               } else {
-                console.log("Here5");
                 console.warn("WebSocket is not open.");
               }
             }

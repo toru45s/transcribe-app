@@ -10,7 +10,7 @@ export function Heading({ children, isItalic = false, className }: Props) {
   return (
     <h1
       className={cn(
-        "w-fit text-2xl md:text-4xl font-extrabold tracking-tight text-balance",
+        "w-fit text-xl md:text-2xl font-extrabold tracking-tight text-balance",
         isItalic && "italic",
         className
       )}

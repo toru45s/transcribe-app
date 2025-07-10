@@ -56,14 +56,25 @@ export default function Home() {
           value="live"
           className="flex flex-col justify-center items-center"
         >
-          <Text isStrong className="relative top-[-35px]">
+          <Text
+            isStrong
+            className="relative top-[-35px] md:w-1/2 md:text-center"
+          >
             {transcript}
           </Text>
         </TabsContent>
         <TabsContent value="history" className="flex flex-col">
-          {transcripts.map((transcript, index) => (
-            <Text key={index}>{transcript}</Text>
-          ))}
+          {transcripts.length === 1 ? (
+            <Text>{transcript}</Text>
+          ) : (
+            <>
+              {transcripts.map((transcript, index) => (
+                <Text key={index}>{transcript}</Text>
+              ))}
+              <Text>{transcript}</Text>
+            </>
+          )}
+
           <div ref={bottomRef} />
         </TabsContent>
       </Tabs>
