@@ -1,0 +1,44 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import { useLogoutAlertStore } from "@/stores/useLogoutAlertStore";
+import { useSideMenuStore } from "@/stores/useSideMenuStore";
+import { useRouter } from "next/navigation";
+
+export const LogoutAlert = () => {
+  const { isOpen, onClose: onCloseLogoutAlert } = useLogoutAlertStore();
+  const { onClose: onCloseSideMenu } = useSideMenuStore();
+  const router = useRouter();
+
+  const onClickLogout = () => {
+    onCloseLogoutAlert();
+    onCloseSideMenu();
+    router.push("/logged-out");
+  };
+
+  return (
+    <AlertDialog open={isOpen} onOpenChange={onCloseLogoutAlert}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Logout</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to logout?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onClickLogout}>Logout</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
