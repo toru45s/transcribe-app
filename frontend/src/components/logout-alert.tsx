@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +12,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { useLogoutAlertStore } from "@/stores/useLogoutAlertStore";
-import { useSideMenuStore } from "@/stores/useSideMenuStore";
+import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
+import { useSideMenuStore } from "@/stores/use-side-menu-store";
 import { useRouter } from "next/navigation";
 
 export const LogoutAlert = () => {

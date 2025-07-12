@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-
-import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +9,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
@@ -21,15 +18,14 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useRegisterDialogStore } from "@/stores/useRegisterDialogStore";
+import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
+import { RegisterForm } from "./register-form";
+import { DESKTOP_BREAKPOINT } from "@/constants";
 
 export function RegisterDialog() {
   const { isOpen, onClose } = useRegisterDialogStore();
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
   if (isDesktop) {
     return (
@@ -41,7 +37,7 @@ export function RegisterDialog() {
               Please fill in the following information to register.
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm />
+          <RegisterForm />
         </DialogContent>
       </Dialog>
     );
@@ -56,7 +52,7 @@ export function RegisterDialog() {
             Please fill in the following information to register.
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm className="px-4" />
+        <RegisterForm />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
@@ -64,21 +60,5 @@ export function RegisterDialog() {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-}
-
-function ProfileForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-6", className)}>
-      <div className="grid gap-3">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
-      </div>
-      <div className="grid gap-3">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
-      </div>
-      <Button type="submit">Save changes</Button>
-    </form>
   );
 }

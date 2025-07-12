@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sheet,
   SheetContent,
@@ -7,12 +9,14 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useSideMenuStore } from "@/stores/useSideMenuStore";
-import { useRegisterDialogStore } from "@/stores/useRegisterDialogStore";
-import { useLoginDialogStore } from "@/stores/useLoginDialogStore";
-import { useLogoutAlertStore } from "@/stores/useLogoutAlertStore";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Link from "next/link";
+import { useSideMenuStore } from "@/stores/use-side-menu-store";
+import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
+import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
+import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
+import { KEY_COLOR_CLASS } from "@/constants";
+import { Link } from "@/components/link";
+import { cn } from "@/lib/utils";
+import { Flex } from "@/components/flex";
 
 export const SideMenu = () => {
   const { isOpen, onClose } = useSideMenuStore();
@@ -38,23 +42,24 @@ export const SideMenu = () => {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>
-            Welcome to <span className="text-[#FF4F00] italic">Subtitles</span>
+            Welcome to{" "}
+            <span className={cn(KEY_COLOR_CLASS, "italic font-extrabold")}>
+              Subtitles
+            </span>
           </SheetTitle>
           <SheetDescription>
             Please login or register to continue if you want full access to the
           </SheetDescription>
         </SheetHeader>
 
-        <div className="px-4">
-          <ul>
-            <li>
-              <Link href="/">April 15, 2025</Link>
-            </li>
-            <li>
-              <Link href="/">April 15, 2025</Link>
-            </li>
-          </ul>
-        </div>
+        <Flex as="nav" vertical gap="small" className="px-4">
+          <Link href="/" onClick={() => onClose()}>
+            Live Subtitles
+          </Link>
+          <Link href="/histories" onClick={() => onClose()}>
+            Subtitle Histories
+          </Link>
+        </Flex>
 
         <SheetFooter>
           <Button onClick={onClickOpenLoginDialog} variant="outline">
@@ -66,8 +71,8 @@ export const SideMenu = () => {
           <Button onClick={onClickLogout} variant="outline">
             Logout
           </Button>
-          <span className="text-sm text-gray-500 text-center">
-            2025 Subtitles. (v0.1.0)
+          <span className="text-sm text-gray-500 text-right">
+            Subtitles All rights reserved | v0.1.0
           </span>
         </SheetFooter>
       </SheetContent>

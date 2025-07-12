@@ -1,13 +1,16 @@
+import { Contents } from "@/components/contents";
+import { Header } from "@/components/header";
 import { Heading } from "@/components/heading";
-import Link from "next/link";
+import { Link } from "@/components/link";
 
 export default function Home() {
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-screen">
-        <Heading>You are logged out</Heading>
-        <Link href="/">Back to app</Link>
-      </div>
+      <Header />
+      <Contents>
+        <Heading as="h2">You are logged out</Heading>
+        <Link href="/">Back to transcription</Link>
+      </Contents>
     </>
   );
 }

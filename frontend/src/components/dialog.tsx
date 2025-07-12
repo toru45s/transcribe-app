@@ -28,7 +28,7 @@ import { Label } from "@/components/ui/label";
 
 export function DrawerDialogDemo() {
   const [open, setOpen] = React.useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
   if (isDesktop) {
     return (
