@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { registerUser } from "@/actions/authentications";
+import { toast } from "sonner";
+import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
+import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 
 const formSchema = z
   .object({
@@ -33,6 +36,9 @@ const formSchema = z
   });
 
 export function RegisterForm() {
+  const { onClose } = useRegisterDialogStore();
+  const { onOpen } = useLoginDialogStore();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,10 +55,30 @@ export function RegisterForm() {
       formData.append("password", values.password);
       formData.append("password_confirmation", values.password_confirmation);
 
-      const response = await registerUser(formData);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
+      const { error } = await registerUser(formData);
+
+      if (error) {
+        throw new Error(error);
+      }
+
+      toast.success("Account created successfully.", {
+        description: "Please login to continue.",
+      });
+
+      form.reset();
+
+      onClose();
+      onOpen();
+    } catch {
+      form.setError("email", {});
+
+      form.setError("password", {});
+
+      form.setError("password_confirmation", {});
+
+      toast.error("Account creation failed.", {
+        description: "Please try again.",
+      });
     }
   }
 
@@ -116,7 +142,9 @@ export function RegisterForm() {
           )}
         />
 
-        <Button type="submit">Register</Button>
+        <Button type="submit" className="w-full md:w-auto">
+          Register
+        </Button>
       </form>
     </Form>
   );

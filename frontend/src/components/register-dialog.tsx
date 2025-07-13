@@ -52,7 +52,9 @@ export function RegisterDialog() {
             Please fill in the following information to register.
           </DrawerDescription>
         </DrawerHeader>
-        <RegisterForm />
+        <div className="px-4">
+          <RegisterForm />
+        </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>

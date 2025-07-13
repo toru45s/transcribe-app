@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/actions/authentications";
+import { toast } from "sonner";
+import { useUserStore } from "@/stores/use-user-store";
+import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 
 const formSchema = z.object({
   email: z.email({
@@ -33,16 +36,33 @@ export function LoginForm() {
     },
   });
 
+  const { login } = useUserStore();
+  const { onClose } = useLoginDialogStore();
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const formData = new FormData();
       formData.append("email", values.email);
       formData.append("password", values.password);
 
-      const response = await loginUser(formData);
-      console.log(response);
+      const { data, error } = await loginUser(formData);
+
+      if (error) {
+        throw new Error(error);
+      }
+
+      login(data.access_token, data.email);
+
+      onClose();
+      toast.success("Login successful.");
     } catch (error) {
       console.error(error);
+      form.setError("email", {});
+      form.setError("password", {});
+
+      toast.error("Login failed.", {
+        description: "Please try again.",
+      });
     }
   }
 
@@ -87,7 +107,9 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit">Login</Button>
+        <Button type="submit" className="w-full md:w-auto">
+          Login
+        </Button>
       </form>
     </Form>
   );

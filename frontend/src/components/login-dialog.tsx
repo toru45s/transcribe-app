@@ -54,7 +54,9 @@ export function LoginDialog() {
             Please fill in the following information to login.
           </DrawerDescription>
         </DrawerHeader>
-        <LoginForm />
+        <div className="px-4">
+          <LoginForm />
+        </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>

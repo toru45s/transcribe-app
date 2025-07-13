@@ -1,15 +1,24 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type UserState = {
   token: string | null;
-  mail: string | null;
-  login: (token: string, mail: string) => void;
+  email: string | null;
+  login: (token: string, email: string) => void;
   logout: () => void;
 };
 
-export const useUserStore = create<UserState>((set) => ({
-  token: null,
-  mail: null,
-  login: (token: string, mail: string) => set({ token, mail }),
-  logout: () => set({ token: null, mail: null }),
-}));
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      token: null,
+      email: null,
+      login: (token: string, email: string) => set({ token, email }),
+      logout: () => set({ token: null, email: null }),
+    }),
+    {
+      name: "user-store",
+      partialize: (state) => ({ token: state.token, email: state.email }),
+    }
+  )
+);

@@ -9,21 +9,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
 import { useSideMenuStore } from "@/stores/use-side-menu-store";
+import { useUserStore } from "@/stores/use-user-store";
 import { useRouter } from "next/navigation";
 
 export const LogoutAlert = () => {
   const { isOpen, onClose: onCloseLogoutAlert } = useLogoutAlertStore();
   const { onClose: onCloseSideMenu } = useSideMenuStore();
+  const { logout } = useUserStore();
   const router = useRouter();
 
   const onClickLogout = () => {
     onCloseLogoutAlert();
     onCloseSideMenu();
+    logout();
     router.push("/logged-out");
   };
 

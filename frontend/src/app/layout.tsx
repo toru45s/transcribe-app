@@ -5,6 +5,7 @@ import { RegisterDialog } from "@/components/register-dialog";
 import { LoginDialog } from "@/components/login-dialog";
 import { LogoutAlert } from "@/components/logout-alert";
 import { SideMenu } from "@/components/side-menu";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +35,12 @@ export default function RootLayout({
         <main className="relative px-4 pb-16 md:px-6 min-h-screen flex flex-col">
           {children}
         </main>
+
         <SideMenu />
         <RegisterDialog />
         <LoginDialog />
         <LogoutAlert />
+        <Toaster />
       </body>
     </html>
   );
