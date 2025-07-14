@@ -12,22 +12,22 @@ entity "User" as user {
   last_login : Date <<AUTO>>
 }
 
-entity "Transcribe" as transcribe {
+entity "History" as history {
   *id : String <<PK>>
   --
-  *sentence: String
-  *transcribe_set_id:  <<FK>>
+  *content: String
+  *history_set:  <<FK>>
   created_at: Date <<AUTO>>
 }
 
-entity "TranscribeSet" as transcribeSet {
+entity "HistorySet" as historySet {
   *id : String <<PK>>
   --
   *title: String
-  *user_id: String <<FK>>
+  *user: User <<FK>>
   created_at: Date <<AUTO>>
 }
 
-transcribe }|--|| transcribeSet : has many
-user ||--o{ transcribeSet : has many
+history }|--|| historySet : has many
+user ||--o{ historySet : has many
 @enduml
