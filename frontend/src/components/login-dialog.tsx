@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
-import { LoginForm } from "./login-form";
+import { LoginForm } from "@/components/login-form";
 import { DESKTOP_BREAKPOINT } from "@/constants";
 
 export function LoginDialog() {

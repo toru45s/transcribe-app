@@ -51,7 +51,7 @@ export function LoginForm() {
         throw new Error(error);
       }
 
-      login(data.access_token, data.email);
+      login(data.access, data.refresh, data.email);
 
       onClose();
       toast.success("Login successful.");

@@ -51,7 +51,7 @@ export const SideMenu = () => {
           </SheetTitle>
           <SheetDescription>
             {email
-              ? `Welcome back, ${email}`
+              ? `Hi there, you are logged in as ${email}.`
               : "Please login or register to continue if you want full access to the"}
           </SheetDescription>
         </SheetHeader>

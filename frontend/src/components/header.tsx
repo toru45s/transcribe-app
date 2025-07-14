@@ -10,6 +10,7 @@ import { Link } from "./link";
 import { Breadcrumb } from "./breadcrumb";
 import { Flex } from "./flex";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import Image from "next/image";
 
 type HeaderProps = {
   isAbleToTranscribe?: boolean;
@@ -38,18 +39,30 @@ export const Header = ({
 
       <div className="flex items-center gap-2">
         {isAbleToTranscribe && (
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-8 cursor-pointer"
-            onClick={handleToggleRecording}
-          >
-            {isRecording ? (
-              <Pause className="size-4" />
-            ) : (
-              <Play className="size-4" />
-            )}
-          </Button>
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8 cursor-pointer"
+              onClick={handleToggleRecording}
+            >
+              {isRecording ? (
+                <Pause className="size-4" />
+              ) : (
+                <Play className="size-4" />
+              )}
+            </Button>
+            <div className="absolute bottom-[-100px] left-[-220px] w-[240px] h-[120px] md:bottom-[-130px] md:left-[-350px] md:w-[380px] md:h-[120px]">
+              <Image
+                src="/description.svg"
+                alt="description"
+                fill
+                className="object-contain"
+                unoptimized
+                priority={true}
+              />
+            </div>
+          </div>
         )}
         <Button
           type="button"

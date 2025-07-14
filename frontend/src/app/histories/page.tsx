@@ -1,10 +1,12 @@
+"use client";
+
 import { Contents } from "@/components/contents";
 import { Flex } from "@/components/flex";
 import { Header } from "@/components/header";
 import { Heading } from "@/components/heading";
 import { Link } from "@/components/link";
 import { Button } from "@/components/ui/button";
-import { Check, Pen, Trash2 } from "lucide-react";
+import { Check, Pen, Trash2, X } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,55 +17,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getHistories } from "@/actions/histories";
+import { useUserStore } from "@/stores/use-user-store";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const breadcrumbItems = [{ label: "Subtitle Histories", href: "/histories" }];
+  const { token } = useUserStore();
+  const [histories, setHistories] = useState<[]>([]);
 
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ];
+  useEffect(() => {
+    const fetchHistories = async () => {
+      if (!token) return;
+      const histories = await getHistories(token);
 
+      setHistories(histories?.data || []);
+    };
+    fetchHistories();
+  }, [token]);
+  console.log("token", token);
+  console.log("histories", histories);
   return (
     <>
       <Header breadcrumbItems={breadcrumbItems} />
@@ -78,18 +51,10 @@ export default function Home() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[
-              "History 1",
-              "History 2",
-              "History 3",
-              "History 4",
-              "History 5",
-              "History 6",
-              "History 7",
-            ].map((history) => (
-              <TableRow key={history}>
+            {histories?.map((history) => (
+              <TableRow key={history.id}>
                 <TableCell>
-                  <Link href="/histories/1">{history}</Link>
+                  <Link href={`/histories/${history.id}`}>{history.title}</Link>
                 </TableCell>
                 <TableCell>
                   <Flex gap="small" align="center" justify="end">
@@ -109,6 +74,14 @@ export default function Home() {
                       className="size-8 cursor-pointer"
                     >
                       <Check className="size-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="size-8 cursor-pointer"
+                    >
+                      <X className="size-4" />
                     </Button>
                     <Button
                       type="button"
