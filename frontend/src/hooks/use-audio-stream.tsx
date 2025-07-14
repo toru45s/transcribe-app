@@ -1,20 +1,21 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useTranscriptStore } from "@/stores/use-transcript-store";
 
 export const useAudioStream = () => {
   const socketRef = useRef<WebSocket | null>(null);
-  const [transcript, setTranscript] = useState("");
-  const [transcripts, setTranscripts] = useState<string[]>([]);
 
-  const [isRecording, setIsRecording] = useState(false);
+  const {
+    setTranscript,
+    transcripts,
+    setTranscripts,
+    isRecording,
+    setIsRecording,
+  } = useTranscriptStore();
+
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
-    null
-  );
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [recordingTime, setRecordingTime] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const RECORDING_MAX_DURATION = 240; // 4 minutes in seconds
   const audioContextRef = useRef<AudioContext | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
@@ -37,16 +38,20 @@ export const useAudioStream = () => {
       };
 
       socketRef.current.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+        const { data, error } = JSON.parse(event.data);
 
-        if (data.type === "transcription") {
+        if (error) {
+          setTranscript(`${error.content}`);
+          setTranscripts([...transcripts, `System: ${error.content}`]);
+        } else if (data.type === "transcription") {
           if (!data.is_partial) {
-            setTranscripts((prev) => [...prev, data.transcript]);
+            setTranscripts([...transcripts, data.content]);
           }
-          setTranscript(data.transcript);
+
+          setTranscript(data.content);
         } else if (data.type === "system") {
-          setTranscript(`${data.message}`);
-          setTranscripts((prev) => [...prev, `System: ${data.message}`]);
+          setTranscript(`${data.content}`);
+          setTranscripts([...transcripts, `System: ${data.content}`]);
         }
       };
     }
@@ -65,7 +70,6 @@ export const useAudioStream = () => {
         .then((stream: MediaStream) => {
           setAudioStream(stream);
           const mediaRecorder = new MediaRecorder(stream);
-          setMediaRecorder(mediaRecorder);
           const audio: BlobPart[] = [];
 
           mediaRecorder.ondataavailable = (event) => {
@@ -166,13 +170,10 @@ export const useAudioStream = () => {
       .toString()
       .padStart(2, "0")}`;
   };
+
   return {
-    transcript,
-    transcripts,
-    isRecording,
     handleToggleRecording,
     formatTime,
     audioBlob,
-    recordingTime,
   };
 };

@@ -11,6 +11,7 @@ import { Breadcrumb } from "./breadcrumb";
 import { Flex } from "./flex";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Image from "next/image";
+import { useTranscriptStore } from "@/stores/use-transcript-store";
 
 type HeaderProps = {
   isAbleToTranscribe?: boolean;
@@ -21,7 +22,8 @@ export const Header = ({
   isAbleToTranscribe,
   breadcrumbItems,
 }: HeaderProps) => {
-  const { handleToggleRecording, isRecording } = useAudioStream();
+  const { handleToggleRecording } = useAudioStream();
+  const { isRecording } = useTranscriptStore();
   const { onOpen: onClickOpenMenu } = useSideMenuStore();
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
