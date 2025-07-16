@@ -17,26 +17,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getHistories } from "@/actions/histories";
+import { getHistorySets } from "@/actions/histories";
 import { useUserStore } from "@/stores/use-user-store";
 import { useEffect, useState } from "react";
+import { useDeleteHistorySetAlertStore } from "@/stores/use-delete-history-set-alert-store";
+import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
 
 export default function Home() {
   const breadcrumbItems = [{ label: "Subtitle Histories", href: "/histories" }];
   const { token } = useUserStore();
-  const [histories, setHistories] = useState<[]>([]);
+  const { onOpen: onOpenDeleteHistorySetAlert } =
+    useDeleteHistorySetAlertStore();
+  const { onOpen: onOpenEditHistorySet } = useDialogEditHistoryStore();
+  const [historySets, setHistorySets] = useState<
+    {
+      id: string;
+      title: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     const fetchHistories = async () => {
       if (!token) return;
-      const histories = await getHistories(token);
+      const historySets = await getHistorySets(token);
 
-      setHistories(histories?.data || []);
+      setHistorySets(historySets?.data || []);
     };
     fetchHistories();
   }, [token]);
-  console.log("token", token);
-  console.log("histories", histories);
+
   return (
     <>
       <Header breadcrumbItems={breadcrumbItems} />
@@ -51,10 +60,12 @@ export default function Home() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {histories?.map((history) => (
-              <TableRow key={history.id}>
+            {historySets?.map((historySet) => (
+              <TableRow key={historySet.id}>
                 <TableCell>
-                  <Link href={`/histories/${history.id}`}>{history.title}</Link>
+                  <Link href={`/histories/${historySet.id}`}>
+                    {historySet.title}
+                  </Link>
                 </TableCell>
                 <TableCell>
                   <Flex gap="small" align="center" justify="end">
@@ -63,31 +74,16 @@ export default function Home() {
                       variant="outline"
                       size="icon"
                       className="size-8 cursor-pointer"
+                      onClick={onOpenEditHistorySet}
                     >
                       <Pen className="size-4" />
                     </Button>
-
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
                       className="size-8 cursor-pointer"
-                    >
-                      <Check className="size-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="size-8 cursor-pointer"
-                    >
-                      <X className="size-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="size-8 cursor-pointer"
+                      onClick={onOpenDeleteHistorySetAlert}
                     >
                       <Trash2 className="size-4" />
                     </Button>

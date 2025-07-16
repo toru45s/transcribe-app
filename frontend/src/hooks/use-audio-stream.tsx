@@ -1,9 +1,12 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTranscriptStore } from "@/stores/use-transcript-store";
+import { useUserStore } from "@/stores/use-user-store";
+import { createHistory, createHistorySet } from "@/actions/histories";
 
 export const useAudioStream = () => {
   const socketRef = useRef<WebSocket | null>(null);
+  const { token } = useUserStore();
 
   const {
     setTranscript,
@@ -11,6 +14,8 @@ export const useAudioStream = () => {
     setTranscripts,
     isRecording,
     setIsRecording,
+    historyId,
+    setHistoryId,
   } = useTranscriptStore();
 
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
@@ -44,7 +49,24 @@ export const useAudioStream = () => {
           setTranscript(`${error.content}`);
           setTranscripts([...transcripts, `System: ${error.content}`]);
         } else if (data.type === "transcription") {
+          console.log("transcription");
+          console.log("token and historyId", token, historyId);
           if (!data.is_partial) {
+            console.log("partial");
+            console.log("token and historyId", token, historyId);
+            if (token && historyId) {
+              const _createHistory = async () => {
+                await createHistory({
+                  token,
+                  historyId,
+                  content: data.content,
+                });
+                console.log("history created");
+              };
+
+              console.log("token and historyId", token, historyId);
+              _createHistory();
+            }
             setTranscripts([...transcripts, data.content]);
           }
 
@@ -61,7 +83,7 @@ export const useAudioStream = () => {
       stopRecording(); // Ensure everything is cleaned up
       socketRef.current?.close();
     };
-  }, []);
+  }, [token, historyId]);
 
   useEffect(() => {
     if (!audioStream) {
@@ -100,14 +122,30 @@ export const useAudioStream = () => {
     };
   }, [audioStream]);
 
-  const handleToggleRecording = (
+  const handleToggleRecording = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     if (isRecording) {
-      stopRecording();
+      setHistoryId(null);
+      await stopRecording();
     } else {
-      startRecording();
+      try {
+        if (token) {
+          const { data, error } = await createHistorySet(token);
+
+          if (error) {
+            throw new Error(error.content);
+          }
+
+          setHistoryId(data.id);
+          console.log("HistorySet created : ", data.id);
+        }
+      } catch (error) {
+        console.error("Error creating history set:", error);
+      }
+
+      await startRecording();
     }
   };
 
