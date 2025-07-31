@@ -20,14 +20,14 @@ import {
 import { getHistorySets } from "@/actions/histories";
 import { useUserStore } from "@/stores/use-user-store";
 import { useEffect, useState } from "react";
-import { useDeleteHistorySetAlertStore } from "@/stores/use-delete-history-set-alert-store";
+import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
 import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
 
 export default function Home() {
   const breadcrumbItems = [{ label: "Subtitle Histories", href: "/histories" }];
   const { token } = useUserStore();
   const { onOpen: onOpenDeleteHistorySetAlert } =
-    useDeleteHistorySetAlertStore();
+    useAlertDeleteHistorySetStore();
   const { onOpen: onOpenEditHistorySet } = useDialogEditHistoryStore();
   const [historySets, setHistorySets] = useState<
     {

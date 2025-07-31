@@ -10,7 +10,7 @@ import { Pen, Trash2 } from "lucide-react";
 import { useUserStore } from "@/stores/use-user-store";
 import React, { useEffect, useMemo, useState, use } from "react";
 import { getHistory, getHistorySet } from "@/actions/histories";
-import { useDeleteHistorySetAlertStore } from "@/stores/use-delete-history-set-alert-store";
+import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
 import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
 
 export default function Home({ params }: { params: Promise<{ id: string }> }) {
@@ -19,7 +19,7 @@ export default function Home({ params }: { params: Promise<{ id: string }> }) {
   const [histories, setHistories] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("");
   const { onOpen: onOpenDeleteHistorySetAlert } =
-    useDeleteHistorySetAlertStore();
+    useAlertDeleteHistorySetStore();
   const { onOpen: onOpenEditHistorySet } = useDialogEditHistoryStore();
   const breadcrumbItems = useMemo(
     () => [

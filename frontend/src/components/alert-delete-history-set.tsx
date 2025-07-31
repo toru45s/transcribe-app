@@ -10,11 +10,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteHistorySetAlertStore } from "@/stores/use-delete-history-set-alert-store";
+import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
 
 export const AlertDeleteHistorySet = () => {
   const { isOpen, onClose: onCloseDeleteHistorySetAlert } =
-    useDeleteHistorySetAlertStore();
+    useAlertDeleteHistorySetStore();
 
   const onClickDeleteHistorySet = () => {
     onCloseDeleteHistorySetAlert();

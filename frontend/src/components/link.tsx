@@ -1,5 +1,6 @@
 import NextLink from "next/link";
 import { cn } from "@/lib/utils";
+import { KEY_COLOR_CLASS } from "@/constants";
 
 type LinkProps = {
   href: string;
@@ -20,6 +21,7 @@ export const Link = ({
     <NextLink
       className={cn(
         "text-primary font-medium ",
+        KEY_COLOR_CLASS,
         !isNoUnderline && "underline underline-offset-4",
         disabled && "text-gray-500 cursor-not-allowed pointer-events-none"
       )}

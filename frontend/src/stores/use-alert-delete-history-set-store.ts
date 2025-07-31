@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-type DeleteHistorySetAlertState = {
+type AlertDeleteHistorySetState = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 };
 
-export const useDeleteHistorySetAlertStore = create<DeleteHistorySetAlertState>(
+export const useAlertDeleteHistorySetStore = create<AlertDeleteHistorySetState>(
   (set) => ({
     isOpen: false,
     onOpen: () => set({ isOpen: true }),
