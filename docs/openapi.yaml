@@ -1,0 +1,294 @@
+openapi: 3.0.4
+info:
+  title: Subtitles API
+  description: API for the Subtitles application
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:8000/v1/
+    description: Local server
+
+paths:
+  /register/:
+    post:
+      summary: Register a new user.
+      description: Register a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        "201": 
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterError'
+  /token:
+    post:
+      summary: Get a new token.
+      description: Get a new token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginError'
+        "400":
+          description: TODO
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginError'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message.
+  /token/refresh:
+    post:
+      summary: Refresh a token.
+      description: Refresh a token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /history-set/<uuid:history_set_id>/history:
+    get:
+      summary: Returns a list of history.
+      description: Optional extended description in CommonMark or HTML.
+
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      summary: Returns a list of history.
+      description: Optional extended description in CommonMark or HTML.
+
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /history-set:
+    get:
+      summary: Returns a list of users.
+      description: Optional extended description in CommonMark or HTML.
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      summary: Create a new history.
+      description: Create a new history.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                is_public:
+                  type: boolean
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+    put:
+      summary: Update a history.
+      description: Update a history.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                is_public:
+                  type: boolean
+                history_set_id:
+                  type: string
+      responses:
+        "200": # status code
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /ws/transcribe:
+    get:
+      summary: WebSocket connection for chat
+      description: |
+        **WebSocket Endpoint**
+        Connect to this endpoint using the WebSocket protocol (ws:// or wss://).
+        
+        Example:
+        ```
+        ws://example.com/ws/chat/
+        ```
+        
+        - Send messages in JSON format.
+        - Receive messages in real-time.
+        
+        **Message format:**
+        ```json
+        {
+          "type": "chat_message",
+          "content": "Hello"
+        }
+        ```
+      responses:
+        '101':
+          description: Switching Protocols (WebSocket upgrade)
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+      example:
+        email: "test@example.com"
+        password: "password"
+
+    RegisterResponse: 
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/RegisterData'
+        error:
+          $ref: '#/components/schemas/RegisterErrorData'
+      example:
+        data:
+          user_id: "123"
+        error: null
+
+    RegisterError:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/RegisterData'
+        error:
+          $ref: '#/components/schemas/RegisterErrorData'
+      example:
+        data: null
+        error:
+          email: ["user with this email already exists."]
+
+    RegisterData:
+      type: object
+      properties:
+        user_id:
+          type: string
+    
+    RegisterErrorData:
+      type: object
+      properties:
+        error:
+          type: array
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+      example:
+        email: "test@example.com"
+        password: "password"
+
+    LoginResponse:
+      type: object
+      properties:
+        access:
+          type: string
+        refresh:
+          type: string
+        user_id:  
+          type: string
+      example:
+        access: "access_token"
+        refresh: "refresh_token"
+        user_id: "123"
+
+    LoginError:
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: "Invalid credentials"
