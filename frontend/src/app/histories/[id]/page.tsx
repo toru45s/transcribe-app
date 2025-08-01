@@ -1,102 +1,58 @@
-"use client";
-
 import { Contents } from "@/components/contents";
 import { Flex } from "@/components/flex";
 import { Header } from "@/components/header";
 import { Heading } from "@/components/heading";
 import { SubtitleLog } from "@/components/subtitle-log";
-import { Button } from "@/components/ui/button";
-import { Pen, Trash2 } from "lucide-react";
-import { useUserStore } from "@/stores/use-user-store";
-import React, { useEffect, useMemo, useState, use } from "react";
-import { getHistory, getHistorySet } from "@/actions/histories";
-import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
-import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
+import { getHistories } from "@/actions/histories";
+import { getHistorySet } from "@/actions/history-set";
+import { ButtonEditHistorySet } from "@/components/histories/button-edit-history-set";
+import { ButtonDeleteHistorySet } from "@/components/histories/button-delete-history-set";
+import { Text } from "@/components/text";
 
-export default function Home({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const { token } = useUserStore();
-  const [histories, setHistories] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("");
-  const { onOpen: onOpenDeleteHistorySetAlert } =
-    useAlertDeleteHistorySetStore();
-  const { onOpen: onOpenEditHistorySet } = useDialogEditHistoryStore();
-  const breadcrumbItems = useMemo(
-    () => [
-      { label: "Subtitle Histories", href: "/histories" },
-      { label: title, href: `/histories/${id}` },
-    ],
-    [id, title]
-  );
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      if (!token) return;
-      const { data, error } = await getHistory({ token, historySetId: id });
-      if (error) {
-        console.error(error);
-        throw error;
-      }
-      if (data) {
-        setHistories(data);
-      }
-    };
-    fetchHistory();
+type History = {
+  id: string;
+  content: string;
+  history_set: string;
+  created_at: string;
+};
 
-    const fetchHistorySet = async () => {
-      if (!token) return;
-      const { data, error } = await getHistorySet({ token, historySetId: id });
-      if (error) {
-        console.error(error);
+export default async function Histories({ params }: Props) {
+  const { id } = await params;
 
-        throw error;
-      }
-      if (data) {
-        setTitle(data.title);
-      }
-    };
-    fetchHistorySet();
-  }, [id, token]);
+  const { data: historySet } = await getHistorySet({ historySetId: id });
+  const { data: histories } = await getHistories({ historySetId: id });
+
+  const breadcrumbItems = [
+    { label: "Subtitle Histories", href: "/histories" },
+    { label: historySet.title, href: `/histories/${id}` },
+  ];
 
   return (
     <>
       <Header breadcrumbItems={breadcrumbItems} />
-
       <Contents>
         <Flex gap="small" align="center" justify="between" isFullWidth>
-          <Heading as="h2">{title}</Heading>
+          <Heading as="h2">{historySet.title}</Heading>
           <Flex gap="small" align="center">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="size-8 cursor-pointer"
-              onClick={onOpenEditHistorySet}
-            >
-              <Pen className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="size-8 cursor-pointer"
-              onClick={onOpenDeleteHistorySetAlert}
-            >
-              <Trash2 className="size-4" />
-            </Button>
+            <ButtonEditHistorySet historySet={historySet} />
+            <ButtonDeleteHistorySet historySet={historySet} />
           </Flex>
         </Flex>
-        <Flex vertical>
+        <Flex vertical isFullWidth>
           {histories?.length > 0 ? (
-            histories?.map((history, index) => (
+            histories?.map((history: History, index: number) => (
               <SubtitleLog
-                sentence={history}
+                sentence={history.content}
                 key={index}
                 hasBackground={index % 2 === 0}
               />
             ))
           ) : (
-            <SubtitleLog sentence="No histories" />
+            <Text destructive>No histories</Text>
           )}
         </Flex>
       </Contents>

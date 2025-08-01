@@ -1,1 +1,1 @@
-export const API_ROOT = process.env.API_ROOT || "http://localhost:8000";
+export const API_ROOT = process.env.API_ROOT || "http://localhost:8000/v1";

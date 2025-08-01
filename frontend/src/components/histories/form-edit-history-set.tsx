@@ -13,10 +13,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { loginUser } from "@/actions/authentications";
 import { toast } from "sonner";
 import { useUserStore } from "@/stores/use-user-store";
-import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
+import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
+import { updateHistorySet } from "@/actions/history-set";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -32,29 +34,34 @@ export function FormEditHistorySet() {
     },
   });
 
-  const { login } = useUserStore();
-  const { onClose } = useLoginDialogStore();
+  const { token } = useUserStore();
+  const { historySetId, historySetTitle, onClose } =
+    useDialogEditHistoryStore();
+  const router = useRouter();
+  useEffect(() => {
+    form.setValue("title", historySetTitle || "");
+  }, [historySetTitle, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const formData = new FormData();
       formData.append("title", values.title);
 
-      // const { data, error } = await loginUser(formData);
+      if (!token) throw new Error("Token is required");
+      if (!historySetId) throw new Error("History set ID is required");
 
-      // if (error) {
-      //   throw new Error(error);
-      // }
-
-      // login(data.access, data.refresh, data.email);
+      await updateHistorySet({ token, historySetId: historySetId, formData });
 
       onClose();
-      toast.success("Login successful.");
+      toast.success("History set updated successfully.");
+      router.refresh();
     } catch (error) {
       console.error(error);
-      form.setError("title", {});
+      form.setError("title", {
+        message: "Error updating history set.",
+      });
 
-      toast.error("Login failed.", {
+      toast.error("Error updating history set.", {
         description: "Please try again.",
       });
     }
