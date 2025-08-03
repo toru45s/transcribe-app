@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/actions/authentications";
 import { toast } from "sonner";
-import { useUserStore } from "@/stores/use-user-store";
+import { useUserStore } from "@/stores/global/use-user-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 
 const formSchema = z.object({
@@ -51,12 +51,13 @@ export function LoginForm() {
         throw new Error(error);
       }
 
-      login(data.access, data.refresh, data.email);
+      if (data.email) {
+        login(data.email);
+      }
 
       onClose();
       toast.success("Login successful.");
-    } catch (error) {
-      console.error(error);
+    } catch {
       form.setError("email", {});
       form.setError("password", {});
 

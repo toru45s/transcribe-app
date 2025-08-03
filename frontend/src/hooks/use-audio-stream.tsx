@@ -1,17 +1,19 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTranscriptStore } from "@/stores/use-transcript-store";
+import { WS_ROOT } from "@/config";
+
+export const DATA_TYPE = {
+  TRANSCRIPTION: "transcription",
+  SYSTEM: "system",
+};
 
 export const useAudioStream = () => {
   const socketRef = useRef<WebSocket | null>(null);
+  const [transcript, setTranscript] = useState<string>("");
+  const [transcripts, setTranscripts] = useState<string[]>([]);
 
-  const {
-    setTranscript,
-    transcripts,
-    setTranscripts,
-    isRecording,
-    setIsRecording,
-  } = useTranscriptStore();
+  const { isRecording, setIsRecording } = useTranscriptStore();
 
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -21,7 +23,7 @@ export const useAudioStream = () => {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:8000/ws/transcribe/");
+    socketRef.current = new WebSocket(`${WS_ROOT}/ws/transcribe/`);
     socketRef.current.binaryType = "arraybuffer";
 
     if (socketRef.current) {
@@ -41,17 +43,15 @@ export const useAudioStream = () => {
         const { data, error } = JSON.parse(event.data);
 
         if (error) {
-          setTranscript(`${error.content}`);
-          setTranscripts([...transcripts, `System: ${error.content}`]);
-        } else if (data.type === "transcription") {
-          if (!data.is_partial) {
-            setTranscripts([...transcripts, data.content]);
-          }
+          setTranscripts((prev) => [...prev, `System: ${error.content}`]);
+        }
+        console.log("data", data);
 
+        if (data.type === DATA_TYPE.TRANSCRIPTION) {
+          if (!data.is_partial) {
+            setTranscripts((prev) => [...prev, data.content]);
+          }
           setTranscript(data.content);
-        } else if (data.type === "system") {
-          setTranscript(`${data.content}`);
-          setTranscripts([...transcripts, `System: ${data.content}`]);
         }
       };
     }
@@ -122,7 +122,7 @@ export const useAudioStream = () => {
       const input = e.inputBuffer.getChannelData(0); // Float32 [-1.0, 1.0]
       const int16 = float32ToInt16(input); // Int16 PCM
       if (socketRef.current?.readyState === WebSocket.OPEN) {
-        console.log("🎧 Sending buffer of size:", int16.buffer.byteLength);
+        // console.log("🎧 Sending buffer of size:", int16.buffer.byteLength);
         socketRef.current.send(int16.buffer); // Send raw PCM
       }
     };
@@ -175,5 +175,7 @@ export const useAudioStream = () => {
     handleToggleRecording,
     formatTime,
     audioBlob,
+    transcript,
+    transcripts,
   };
 };

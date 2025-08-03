@@ -1,6 +1,6 @@
 import { Contents } from "@/components/contents";
 import { Flex } from "@/components/flex";
-import { Header } from "@/components/header";
+import { Header } from "@/components/global/header";
 import { Heading } from "@/components/heading";
 import { SubtitleLog } from "@/components/subtitle-log";
 import { getHistories } from "@/actions/histories";
@@ -28,7 +28,7 @@ export default async function Histories({ params }: Props) {
 
   const breadcrumbItems = [
     { label: "Subtitle Histories", href: "/histories" },
-    { label: historySet.title, href: `/histories/${id}` },
+    { label: historySet?.title, href: `/histories/${id}` },
   ];
 
   return (

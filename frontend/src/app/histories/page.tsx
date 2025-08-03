@@ -1,5 +1,5 @@
 import { Contents } from "@/components/contents";
-import { Header } from "@/components/header";
+import { Header } from "@/components/global/header";
 import { Heading } from "@/components/heading";
 import {
   Table,
@@ -7,7 +7,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow as TableRowBase,
+  TableRow,
 } from "@/components/ui/table";
 import { Link } from "@/components/link";
 import { Flex } from "@/components/flex";
@@ -15,10 +15,10 @@ import { Flex } from "@/components/flex";
 import { getHistorySetList } from "@/actions/history-set";
 import { ButtonEditHistorySet } from "@/components/histories/button-edit-history-set";
 import { ButtonDeleteHistorySet } from "@/components/histories/button-delete-history-set";
+import { Text } from "@/components/text";
 
-export default async function Home() {
+export default async function Histories() {
   const breadcrumbItems = [{ label: "Subtitle Histories", href: "/histories" }];
-
   const { data: historySetList } = await getHistorySetList();
 
   return (
@@ -29,19 +29,19 @@ export default async function Home() {
         <Heading as="h2">Subtitle Histories</Heading>
         <Table>
           <TableHeader>
-            <TableRowBase>
+            <TableRow>
               <TableHead>Subtitle data</TableHead>
               <TableHead></TableHead>
-            </TableRowBase>
+            </TableRow>
           </TableHeader>
           <TableBody>
             {historySetList ? (
               historySetList?.map(
                 (historySet: { id: string; title: string }) => (
-                  <TableRowBase key={historySet.id}>
+                  <TableRow key={historySet.id}>
                     <TableCell>
                       <Link href={`/histories/${historySet.id}`}>
-                        {historySet.title}
+                        {historySet?.title}
                       </Link>
                     </TableCell>
                     <TableCell>
@@ -50,11 +50,15 @@ export default async function Home() {
                         <ButtonDeleteHistorySet historySet={historySet} />
                       </Flex>
                     </TableCell>
-                  </TableRowBase>
+                  </TableRow>
                 )
               )
             ) : (
-              <div>Nothing</div>
+              <TableRow>
+                <TableCell colSpan={2}>
+                  <Text isGray>Nothing</Text>
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

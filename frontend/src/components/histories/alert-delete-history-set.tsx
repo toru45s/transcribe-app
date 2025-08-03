@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
 import { deleteHistorySet } from "@/actions/history-set";
-import { useUserStore } from "@/stores/use-user-store";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
@@ -27,12 +26,9 @@ export const AlertDeleteHistorySet = () => {
     historySetTitle,
   } = useAlertDeleteHistorySetStore();
 
-  const { token } = useUserStore();
-
   const onClickDeleteHistorySet = async () => {
     try {
-      if (!token) throw new Error("Token is required");
-      await deleteHistorySet({ token, historySetId });
+      await deleteHistorySet({ historySetId });
       toast.success("History set deleted successfully");
       router.push("/histories");
     } catch (error) {

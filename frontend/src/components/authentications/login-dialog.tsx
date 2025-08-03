@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,12 +20,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
-import { RegisterForm } from "./register-form";
-import { DESKTOP_BREAKPOINT } from "@/constants";
 
-export function RegisterDialog() {
-  const { isOpen, onClose } = useRegisterDialogStore();
+import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
+import { LoginForm } from "@/components/authentications/login-form";
+import { DESKTOP_BREAKPOINT } from "@/constants/global";
+
+export function LoginDialog() {
+  const { isOpen, onClose } = useLoginDialogStore();
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 
   if (isDesktop) {
@@ -32,12 +34,12 @@ export function RegisterDialog() {
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Register</DialogTitle>
+            <DialogTitle>Login</DialogTitle>
             <DialogDescription>
-              Please fill in the following information to register.
+              Please fill in the following information to login.
             </DialogDescription>
           </DialogHeader>
-          <RegisterForm />
+          <LoginForm />
         </DialogContent>
       </Dialog>
     );
@@ -47,13 +49,13 @@ export function RegisterDialog() {
     <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Register</DrawerTitle>
+          <DrawerTitle>Login</DrawerTitle>
           <DrawerDescription>
-            Please fill in the following information to register.
+            Please fill in the following information to login.
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4">
-          <RegisterForm />
+          <LoginForm />
         </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>

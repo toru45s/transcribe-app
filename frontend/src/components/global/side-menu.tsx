@@ -9,19 +9,36 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useSideMenuStore } from "@/stores/use-side-menu-store";
+import { useSideMenuStore } from "@/stores/global/use-side-menu-store";
 import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
-import { KEY_COLOR_CLASS } from "@/constants";
+import { KEY_COLOR_CLASS } from "@/constants/global";
 import { Link } from "@/components/link";
 import { cn } from "@/lib/utils";
 import { Flex } from "@/components/flex";
-import { useUserStore } from "@/stores/use-user-store";
+import { useUserStore } from "@/stores/global/use-user-store";
+import { VERSION } from "@/config";
+
+const menuItems = [
+  {
+    label: "About Subtitles",
+    href: "/about",
+  },
+  {
+    label: "Live Subtitles",
+    href: "/",
+  },
+  {
+    label: "Subtitle Histories",
+    href: "/histories",
+    isPrivate: true,
+  },
+];
 
 export const SideMenu = () => {
   const { isOpen, onClose } = useSideMenuStore();
-  const { email, token } = useUserStore();
+  const { email, isLoggedIn } = useUserStore();
 
   const { onOpen: onOpenRegisterDialog } = useRegisterDialogStore();
   const { onOpen: onOpenLoginDialog } = useLoginDialogStore();
@@ -56,19 +73,22 @@ export const SideMenu = () => {
           </SheetDescription>
         </SheetHeader>
 
-        {!!token && (
-          <Flex as="nav" vertical gap="small" className="px-4">
-            <Link href="/" onClick={() => onClose()}>
-              Live Subtitles
-            </Link>
-            <Link href="/histories" onClick={() => onClose()}>
-              Subtitle Histories
-            </Link>
-          </Flex>
-        )}
+        <Flex as="nav" vertical gap="small" className="px-4">
+          {menuItems.map((item) => {
+            if (item.isPrivate && !isLoggedIn) {
+              return null;
+            }
+
+            return (
+              <Link key={item.href} href={item.href} onClick={() => onClose()}>
+                {item.label}
+              </Link>
+            );
+          })}
+        </Flex>
 
         <SheetFooter>
-          {!!token ? (
+          {isLoggedIn ? (
             <Button onClick={onClickLogout} variant="outline">
               Logout
             </Button>
@@ -83,9 +103,7 @@ export const SideMenu = () => {
             </>
           )}
 
-          <span className="text-sm text-gray-500 text-right">
-            Subtitles All rights reserved | v0.1.0
-          </span>
+          <span className="text-sm text-gray-500 text-right">v{VERSION}</span>
         </SheetFooter>
       </SheetContent>
     </Sheet>

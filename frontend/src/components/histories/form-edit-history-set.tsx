@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useUserStore } from "@/stores/use-user-store";
 import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
 import { updateHistorySet } from "@/actions/history-set";
 import { useEffect } from "react";
@@ -34,7 +33,6 @@ export function FormEditHistorySet() {
     },
   });
 
-  const { token } = useUserStore();
   const { historySetId, historySetTitle, onClose } =
     useDialogEditHistoryStore();
   const router = useRouter();
@@ -46,11 +44,13 @@ export function FormEditHistorySet() {
     try {
       const formData = new FormData();
       formData.append("title", values.title);
-
-      if (!token) throw new Error("Token is required");
+      console.log("formData onSubmit", formData);
       if (!historySetId) throw new Error("History set ID is required");
 
-      await updateHistorySet({ token, historySetId: historySetId, formData });
+      await updateHistorySet({
+        historySetId: historySetId,
+        formData,
+      });
 
       onClose();
       toast.success("History set updated successfully.");

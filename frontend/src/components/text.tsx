@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   isStrong?: boolean;
   isBold?: boolean;
+  isGray?: boolean;
   className?: string;
   children: React.ReactNode;
   destructive?: boolean;
@@ -10,6 +11,7 @@ type Props = {
 
 export function Text({
   isStrong,
+  isGray,
   isBold,
   className,
   children,
@@ -20,6 +22,7 @@ export function Text({
       className={cn(
         isStrong ? "text-2xl font-semibold tracking-tight" : "leading-7",
         isBold && "font-bold",
+        isGray && "text-gray-500",
         destructive && "text-destructive",
         className
       )}

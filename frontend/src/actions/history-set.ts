@@ -1,10 +1,11 @@
 "use server";
 
 import { API_ROOT } from "@/config";
-import { ACCESS_TOKEN_KEY } from "@/constants";
+import { ACCESS_TOKEN_KEY, STATUS_CODE_UNAUTHORIZED } from "@/constants/global";
 import dayjs from "dayjs";
 import { cookies } from "next/headers";
-import { fetchWithToken } from "./utils";
+import { fetchWithToken } from "@/actions/utils";
+import { getAccessToken, getRefreshToken, logout, refreshAccessToken, setAccessToken } from "@/actions/authentications";
 
 export const createHistorySet = async () => {
   try {
@@ -28,58 +29,63 @@ export const createHistorySet = async () => {
 };
 
 export const updateHistorySet = async ({
-  token,
   historySetId,
   formData,
 }: {
-  token: string;
   historySetId: string;
   formData: FormData;
 }) => {
-  try {
-    const title = formData.get("title") as string;
+  const title = formData.get("title") as string;
+  const accessToken = await getAccessToken();
 
-    const response = await fetch(`${API_ROOT}/history-set/${historySetId}/`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title }),
-    });
-    return response.json();
-  } catch (error) {
-    console.error("Error updating history set:", error);
-  }
+  const response = await fetch(`${API_ROOT}/history-set/${historySetId}/`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title }),
+  })
+
+  return response.json();
 };
 
 export const deleteHistorySet = async ({
-  token,
   historySetId,
 }: {
-  token: string;
   historySetId: string;
 }) => {
-  try {
-    await fetch(`${API_ROOT}/history-set/${historySetId}/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (error) {
-    console.error("Error deleting history set:", error);
-  }
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${API_ROOT}/history-set/${historySetId}/`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    
+  })
+  console.log("--------------------------------");
+  console.log(response);
+  return response?.json();
 };
 
 export const getHistorySetList = async () => {
-  const response = await fetchWithToken({
-    url: `${API_ROOT}/history-set/`,
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${API_ROOT}/history-set/`, {
     method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
   });
 
-  return response?.json();
+  if (response.status === STATUS_CODE_UNAUTHORIZED) {
+    logout();
+  }
+
+  return response.json();
 };
 
 export const getHistorySet = async ({
@@ -87,10 +93,13 @@ export const getHistorySet = async ({
 }: {
   historySetId: string;
 }) => {
-  const response = await fetchWithToken({
-    url: `${API_ROOT}/history-set/${historySetId}/`,
-    method: "GET",
-  });
+  const accessToken = await getAccessToken();
+  console.log("--------------------------------");
+  console.log(accessToken);
+  // const response = await fetchWithToken({
+  //   url: `${API_ROOT}/history-set/${historySetId}/`,
+  //   method: "GET",
+  // });
 
-  return response?.json();
+  return response;
 };

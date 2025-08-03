@@ -1,7 +1,7 @@
 "use client"; // Error boundaries must be Client Components
 
 import { Contents } from "@/components/contents";
-import { Header } from "@/components/header";
+import { Header } from "@/components/global/header";
 import { Heading } from "@/components/heading";
 import { Link } from "@/components/link";
 import { useEffect } from "react";

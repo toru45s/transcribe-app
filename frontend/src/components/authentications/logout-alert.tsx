@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
-import { useSideMenuStore } from "@/stores/use-side-menu-store";
-import { useUserStore } from "@/stores/use-user-store";
+import { useSideMenuStore } from "@/stores/global/use-side-menu-store";
+import { useUserStore } from "@/stores/global/use-user-store";
 import { useRouter } from "next/navigation";
+import { logout as logoutServer } from "@/actions/authentications";
 
 export const LogoutAlert = () => {
   const { isOpen, onClose: onCloseLogoutAlert } = useLogoutAlertStore();
@@ -22,10 +23,13 @@ export const LogoutAlert = () => {
   const { logout } = useUserStore();
   const router = useRouter();
 
-  const onClickLogout = () => {
+  const onClickLogout = async () => {
+    await logoutServer();
+    await logout();
+
     onCloseLogoutAlert();
     onCloseSideMenu();
-    logout();
+
     router.push("/logged-out");
   };
 

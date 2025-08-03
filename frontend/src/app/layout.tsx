@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { RegisterDialog } from "@/components/register-dialog";
-import { LoginDialog } from "@/components/login-dialog";
-import { LogoutAlert } from "@/components/logout-alert";
-import { SideMenu } from "@/components/side-menu";
+import { RegisterDialog } from "@/components/register/register-dialog";
+import { LoginDialog } from "@/components/authentications/login-dialog";
+import { LogoutAlert } from "@/components/authentications/logout-alert";
+import { SideMenu } from "@/components/global/side-menu";
 import { Toaster } from "@/components/ui/sonner";
 import { AlertDeleteHistorySet } from "@/components/histories/alert-delete-history-set";
 import { DialogEditHistorySet } from "@/components/histories/dialog-edit-history-set";
@@ -22,6 +22,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Subtitles",
   description: "Subtitles is a helper for listening to English",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
