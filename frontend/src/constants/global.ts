@@ -5,3 +5,4 @@ export const DESKTOP_BREAKPOINT = "(min-width: 768px)";
 export const ACCESS_TOKEN_KEY = "accessToken";
 export const REFRESH_TOKEN_KEY = "refreshToken";
 export const STATUS_CODE_UNAUTHORIZED = 401;
+export const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";

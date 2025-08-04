@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import dayjs from "dayjs";
+
+import { useEffect, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Text } from "@/components/text";
@@ -14,15 +16,25 @@ import { useAudioStream } from "@/hooks/use-audio-stream";
 import { Pause, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { GREEN_COLOR_CLASS, RED_COLOR_CLASS } from "@/constants/global";
+import {
+  DATE_FORMAT,
+  GREEN_COLOR_CLASS,
+  RED_COLOR_CLASS,
+} from "@/constants/global";
+import { SubtitleLog } from "@/components/subtitle-log";
+import { createHistorySet } from "@/actions/history-set";
+
+import { useUserStore } from "@/stores/global/use-user-store";
 
 export const TranscriptionTab = () => {
   const [tab, setTab] = useState(TAB_KEYS.LIVE);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const { isLoggedIn } = useUserStore();
 
   const {
     transcript,
     transcripts,
-    isPause,
     isRecording,
     onOpenWebSocket,
     onCloseWebSocket,
@@ -47,6 +59,11 @@ export const TranscriptionTab = () => {
   });
 
   const onStartTranscription = async () => {
+    if (isLoggedIn) {
+      const title = `Subtitle of ${dayjs().format(DATE_FORMAT)}`;
+      await createHistorySet({ title });
+    }
+
     await onStartWebSocket();
     startRecording();
   };
@@ -74,7 +91,7 @@ export const TranscriptionTab = () => {
           variant="outline"
           size="icon"
           className={cn("size-8 cursor-pointer", {
-            "bg-accent": isPause,
+            "bg-accent": isRecording,
           })}
           onClick={onStartTranscription}
         >
@@ -99,12 +116,11 @@ export const TranscriptionTab = () => {
       >
         <Text isStrong className="relative top-[-25px] max-w-1/2 ">
           {isRecording ? transcript : connectionStatus}
-          {/* {transcripts.length > 0 && transcript} */}
         </Text>
       </TabsContent>
       <TabsContent value={TAB_KEYS.HISTORY} className="flex flex-col">
         <Contents>
-          {/* {transcripts.length === 1 ? (
+          {transcripts.length === 1 ? (
             <Text>{transcript}</Text>
           ) : (
             <>
@@ -123,7 +139,7 @@ export const TranscriptionTab = () => {
             </>
           )}
 
-          <div ref={bottomRef} /> */}
+          <div ref={bottomRef} />
         </Contents>
       </TabsContent>
     </Tabs>

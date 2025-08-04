@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+
+import { useState, useRef } from "react";
 import { convertFloat32ToInt16 } from "@/service/transcriptService";
 
 export const DATA_TYPE = {
@@ -12,11 +13,7 @@ export const useAudioStream = () => {
   const [transcripts, setTranscripts] = useState<string[]>([]);
   const [audioData, setAudioData] = useState<ArrayBuffer | null>(null);
 
-  const [isPause, setIsPause] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
@@ -40,9 +37,14 @@ export const useAudioStream = () => {
     switch (data.type) {
       case DATA_TYPE.TRANSCRIPTION:
         setTranscript(data.content);
+
+        if (!data.is_partial) {
+          setTranscripts((prev) => [...prev, data.content]);
+        }
         break;
       case DATA_TYPE.SYSTEM:
         setTranscript(data.content);
+        setTranscripts((prev) => [...prev, data.content]);
         break;
     }
   };
@@ -50,44 +52,6 @@ export const useAudioStream = () => {
   const onErrorWebSocket = (event: WebSocketEventMap["error"]) => {
     console.log("WebSocket error", event);
   };
-
-  useEffect(() => {
-    if (!audioStream) {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream: MediaStream) => {
-          setAudioStream(stream);
-          const mediaRecorder = new MediaRecorder(stream);
-          const audio: BlobPart[] = [];
-
-          mediaRecorder.ondataavailable = (event) => {
-            console.log("event", event.data);
-            // if (event.data.size > 0) {
-            //   if (socketRef.current?.readyState === WebSocket.OPEN) {
-            //     socketRef.current.send(event.data);
-            //   } else {
-            //     console.warn("WebSocket is not open.");
-            //   }
-            // }
-          };
-
-          mediaRecorder.onstop = () => {
-            const b = new Blob(audio, { type: "audio/wav" });
-            setAudioBlob(b as Blob);
-            console.log("audioBlob", b);
-          };
-        })
-        .catch((error) => {
-          console.error("Error accessing microphone:", error);
-        });
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, [audioStream]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -114,6 +78,8 @@ export const useAudioStream = () => {
   };
 
   const stopRecording = () => {
+    setTranscripts((prev) => [...prev, transcript]);
+
     processorRef.current?.disconnect();
     sourceRef.current?.disconnect();
     audioContextRef.current?.close();
@@ -123,18 +89,12 @@ export const useAudioStream = () => {
     audioContextRef.current = null;
 
     setIsRecording(false);
-    // mediaRecorder?.stop();
-    // setIsRecording(false);
-    // if (timerRef.current) {
-    //   clearInterval(timerRef.current);
-    // }
   };
 
   return {
     audioData,
     transcript,
     transcripts,
-    isPause,
     isRecording,
     onOpenWebSocket,
     onCloseWebSocket,

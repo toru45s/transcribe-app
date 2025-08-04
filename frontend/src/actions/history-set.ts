@@ -1,22 +1,15 @@
 "use server";
 
-import { API_ROOT } from "@/config";
+import { API_ROOT, APP_ROOT } from "@/config";
 import { ACCESS_TOKEN_KEY, STATUS_CODE_UNAUTHORIZED } from "@/constants/global";
-import dayjs from "dayjs";
-import { cookies } from "next/headers";
 import { logout } from "@/actions/authentications";
 import { getAccessToken } from "@/lib/api";
 
-export const createHistorySet = async () => {
+export const createHistorySet = async ({ title }: { title: string }) => {
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
-
-    const title = `Subtitle of ${dayjs().format("YYYY-MM-DD HH:mm:ss")}`;
-    const response = await fetch(`${API_ROOT}/history-set/`, {
+    const response = await fetch(`${APP_ROOT}/api/history-set/`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ title }),

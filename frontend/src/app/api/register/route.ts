@@ -1,19 +1,16 @@
 import { API_ROOT } from "@/config";
+import { apiClient } from "@/lib/api";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
 
-  try {
-    const response = await fetch(`${API_ROOT}/register/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+  const response = await apiClient({
+    uri: `${API_ROOT}/register/`,
+    method: "POST",
+    body: { email, password },
+    isAuth: false,
+  });
 
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+  return NextResponse.json(response);
 }
