@@ -1,27 +1,13 @@
 "use server";
 
-import { API_ROOT } from "@/config";
+import { API_ROOT, APP_ROOT } from "@/config";
 import { cookies } from "next/headers";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/global";
+import { ACCESS_TOKEN_KEY } from "@/constants/global";
+import { getRefreshToken } from "@/lib/api";
 
-export const getAccessToken = async () => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
-  return accessToken;
-};
-
-export const getRefreshToken = async () => {
-  const cookieStore = await cookies();
-  const refreshToken = cookieStore.get(REFRESH_TOKEN_KEY)?.value;
-  return refreshToken;
-};
-
-export async function loginUser(formData: FormData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
-
+export async function loginUser(email: string, password: string) {
   try {
-    const response = await fetch(`${API_ROOT}/token/`, {
+    const response = await fetch(`${APP_ROOT}/api/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,26 +17,11 @@ export async function loginUser(formData: FormData) {
 
     const responseData = await response.json();
 
-    const { data, error } = responseData;
+    const { error } = responseData;
 
     if (error) {
       throw new Error(error);
     }
-
-    const cookieStore = await cookies();
-    cookieStore.set(ACCESS_TOKEN_KEY, data.access, {
-      httpOnly: true,
-      secure: true,
-      path: "/",
-      sameSite: "lax",
-    });
-
-    cookieStore.set(REFRESH_TOKEN_KEY, data.refresh, {
-      httpOnly: true,
-      secure: true,
-      path: "/",
-      sameSite: "lax",
-    });
 
     return responseData;
   } catch (error) {
@@ -65,7 +36,7 @@ export async function refreshAccessToken() {
     if (!refreshToken) {
       throw new Error("No refresh token");
     }
-    
+
     const response = await fetch(`${API_ROOT}/token/refresh/`, {
       method: "POST",
       headers: {
@@ -88,16 +59,10 @@ export async function refreshAccessToken() {
       path: "/",
       sameSite: "lax",
     });
-
   } catch (error) {
     console.error(error);
     throw new Error("Failed to refresh token");
   }
 }
 
-export async function logout() {
-  const cookieStore = await cookies();
-  
-  cookieStore.delete(ACCESS_TOKEN_KEY);
-  cookieStore.delete(REFRESH_TOKEN_KEY);
-}
+export async function logout() {}

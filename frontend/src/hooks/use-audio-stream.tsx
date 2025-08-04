@@ -9,9 +9,9 @@ export const DATA_TYPE = {
 };
 
 export const useAudioStream = () => {
-  const socketRef = useRef<WebSocket | null>(null);
   const [transcript, setTranscript] = useState<string>("");
   const [transcripts, setTranscripts] = useState<string[]>([]);
+  const [isPause, setIsPause] = useState<boolean>(false);
 
   const { isRecording, setIsRecording } = useTranscriptStore();
 
@@ -22,46 +22,46 @@ export const useAudioStream = () => {
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
-  useEffect(() => {
-    socketRef.current = new WebSocket(`${WS_ROOT}/ws/transcribe/`);
-    socketRef.current.binaryType = "arraybuffer";
+  // useEffect(() => {
+  //   socketRef.current = new WebSocket(`${WS_ROOT}/ws/transcribe/`);
+  //   socketRef.current.binaryType = "arraybuffer";
 
-    if (socketRef.current) {
-      socketRef.current.onopen = () => {
-        console.log("WebSocket connection opened");
-      };
+  //   if (socketRef.current) {
+  //     socketRef.current.onopen = () => {
+  //       console.log("WebSocket connection opened");
+  //     };
 
-      socketRef.current.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
+  //     socketRef.current.onerror = (error) => {
+  //       console.error("WebSocket error:", error);
+  //     };
 
-      socketRef.current.onclose = () => {
-        console.log("WebSocket connection closed");
-      };
+  //     socketRef.current.onclose = () => {
+  //       console.log("WebSocket connection closed");
+  //     };
 
-      socketRef.current.onmessage = (event) => {
-        const { data, error } = JSON.parse(event.data);
+  //     socketRef.current.onmessage = (event) => {
+  //       const { data, error } = JSON.parse(event.data);
 
-        if (error) {
-          setTranscripts((prev) => [...prev, `System: ${error.content}`]);
-        }
-        console.log("data", data);
+  //       if (error) {
+  //         setTranscripts((prev) => [...prev, `System: ${error.content}`]);
+  //       }
+  //       console.log("data", data);
 
-        if (data.type === DATA_TYPE.TRANSCRIPTION) {
-          if (!data.is_partial) {
-            setTranscripts((prev) => [...prev, data.content]);
-          }
-          setTranscript(data.content);
-        }
-      };
-    }
+  //       if (data.type === DATA_TYPE.TRANSCRIPTION) {
+  //         if (!data.is_partial) {
+  //           setTranscripts((prev) => [...prev, data.content]);
+  //         }
+  //         setTranscript(data.content);
+  //       }
+  //     };
+  //   }
 
-    return () => {
-      console.log("Closing WebSocket connection");
-      stopRecording(); // Ensure everything is cleaned up
-      socketRef.current?.close();
-    };
-  }, []);
+  //   return () => {
+  //     console.log("Closing WebSocket connection");
+  //     stopRecording(); // Ensure everything is cleaned up
+  //     socketRef.current?.close();
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!audioStream) {
@@ -72,15 +72,15 @@ export const useAudioStream = () => {
           const mediaRecorder = new MediaRecorder(stream);
           const audio: BlobPart[] = [];
 
-          mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-              if (socketRef.current?.readyState === WebSocket.OPEN) {
-                socketRef.current.send(event.data);
-              } else {
-                console.warn("WebSocket is not open.");
-              }
-            }
-          };
+          // mediaRecorder.ondataavailable = (event) => {
+          //   if (event.data.size > 0) {
+          //     if (socketRef.current?.readyState === WebSocket.OPEN) {
+          //       socketRef.current.send(event.data);
+          //     } else {
+          //       console.warn("WebSocket is not open.");
+          //     }
+          //   }
+          // };
 
           mediaRecorder.onstop = () => {
             const b = new Blob(audio, { type: "audio/wav" });
@@ -121,10 +121,10 @@ export const useAudioStream = () => {
     processor.onaudioprocess = (e) => {
       const input = e.inputBuffer.getChannelData(0); // Float32 [-1.0, 1.0]
       const int16 = float32ToInt16(input); // Int16 PCM
-      if (socketRef.current?.readyState === WebSocket.OPEN) {
-        // console.log("🎧 Sending buffer of size:", int16.buffer.byteLength);
-        socketRef.current.send(int16.buffer); // Send raw PCM
-      }
+      // if (socketRef.current?.readyState === WebSocket.OPEN) {
+      //   // console.log("🎧 Sending buffer of size:", int16.buffer.byteLength);
+      //   socketRef.current.send(int16.buffer); // Send raw PCM
+      // }
     };
 
     source.connect(processor);
@@ -177,5 +177,6 @@ export const useAudioStream = () => {
     audioBlob,
     transcript,
     transcripts,
+    isPause
   };
 };

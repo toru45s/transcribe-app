@@ -4,15 +4,14 @@ import { API_ROOT } from "@/config";
 import { ACCESS_TOKEN_KEY, STATUS_CODE_UNAUTHORIZED } from "@/constants/global";
 import dayjs from "dayjs";
 import { cookies } from "next/headers";
-import { fetchWithToken } from "@/actions/utils";
-import { getAccessToken, getRefreshToken, logout, refreshAccessToken, setAccessToken } from "@/actions/authentications";
+import { logout } from "@/actions/authentications";
+import { getAccessToken } from "@/lib/api";
 
 export const createHistorySet = async () => {
   try {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
-    console.log("--------------------------------");
-    console.log(accessToken);
+
     const title = `Subtitle of ${dayjs().format("YYYY-MM-DD HH:mm:ss")}`;
     const response = await fetch(`${API_ROOT}/history-set/`, {
       method: "POST",
@@ -45,7 +44,7 @@ export const updateHistorySet = async ({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ title }),
-  })
+  });
 
   return response.json();
 };
@@ -63,8 +62,7 @@ export const deleteHistorySet = async ({
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    
-  })
+  });
   console.log("--------------------------------");
   console.log(response);
   return response?.json();

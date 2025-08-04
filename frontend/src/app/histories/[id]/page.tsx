@@ -23,8 +23,11 @@ type History = {
 export default async function Histories({ params }: Props) {
   const { id } = await params;
 
-  const { data: historySet } = await getHistorySet({ historySetId: id });
-  const { data: histories } = await getHistories({ historySetId: id });
+  // const { data: historySet } = await getHistorySet({ historySetId: id });
+  // const { data: histories } = await getHistories({ historySetId: id });
+
+  const historySet: { id: string; title: string } = { id: "", title: "" };
+  const histories: History[] = [];
 
   const breadcrumbItems = [
     { label: "Subtitle Histories", href: "/histories" },

@@ -1,4 +1,5 @@
-import { API_ROOT } from "@/config";
+import { APP_ROOT } from "@/config";
+
 /**
  * Registers a new user with the provided form data.
  *
@@ -8,14 +9,16 @@ import { API_ROOT } from "@/config";
 export async function registerUser(formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
+
   try {
-    const response = await fetch(`${API_ROOT}/register/`, {
+    const response = await fetch(`${APP_ROOT}/api/register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
+
     return response;
   } catch (error) {
     console.error(error);
