@@ -4,9 +4,28 @@ import { WS_ROOT } from "@/config";
 
 const WS_URL = `${WS_ROOT}/ws/transcribe/`;
 
-export const useHandleWebSocket = () => {
+type UseHandleWebSocketProps = {
+  onOpen: (event: WebSocketEventMap["open"]) => void;
+  onClose: (event: WebSocketEventMap["close"]) => void;
+  onMessage: (event: WebSocketEventMap["message"]) => void;
+  onError: (event: WebSocketEventMap["error"]) => void;
+};
+
+export const useHandleWebSocket = ({
+  onOpen,
+  onClose,
+  onMessage,
+  onError,
+}: UseHandleWebSocketProps) => {
   const [socketUrl, setSocketUrl] = useState<string | null>(null);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
+    onOpen,
+    onClose,
+    onMessage,
+    onError,
+    shouldReconnect: (closeEvent) => true,
+  });
 
   const onStartWebSocket = () => {
     console.log("Starting WebSocket");
@@ -32,5 +51,6 @@ export const useHandleWebSocket = () => {
     connectionStatus,
     readyState,
     lastMessage,
+    sendMessage,
   };
 };

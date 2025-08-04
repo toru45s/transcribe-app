@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useTranscriptStore } from "@/stores/use-transcript-store";
-import { WS_ROOT } from "@/config";
+import { convertFloat32ToInt16 } from "@/service/transcriptService";
 
 export const DATA_TYPE = {
   TRANSCRIPTION: "transcription",
@@ -11,10 +10,10 @@ export const DATA_TYPE = {
 export const useAudioStream = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [transcripts, setTranscripts] = useState<string[]>([]);
+  const [audioData, setAudioData] = useState<ArrayBuffer | null>(null);
+
   const [isPause, setIsPause] = useState<boolean>(false);
-
-  const { isRecording, setIsRecording } = useTranscriptStore();
-
+  const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -22,46 +21,35 @@ export const useAudioStream = () => {
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
-  // useEffect(() => {
-  //   socketRef.current = new WebSocket(`${WS_ROOT}/ws/transcribe/`);
-  //   socketRef.current.binaryType = "arraybuffer";
+  const onOpenWebSocket = (event: WebSocketEventMap["open"]) => {
+    console.log("WebSocket connection opened", event);
+  };
 
-  //   if (socketRef.current) {
-  //     socketRef.current.onopen = () => {
-  //       console.log("WebSocket connection opened");
-  //     };
+  const onCloseWebSocket = (event: WebSocketEventMap["close"]) => {
+    console.log("WebSocket connection closed", event);
+  };
 
-  //     socketRef.current.onerror = (error) => {
-  //       console.error("WebSocket error:", error);
-  //     };
+  const onMessageWebSocket = (event: WebSocketEventMap["message"]) => {
+    const { data, error } = JSON.parse(event.data);
+    console.log("data", data);
+    console.log("error", error);
+    // if (error) {
+    //   setTranscripts((prev) => [...prev, `System: ${error.content}`]);
+    // }
 
-  //     socketRef.current.onclose = () => {
-  //       console.log("WebSocket connection closed");
-  //     };
+    switch (data.type) {
+      case DATA_TYPE.TRANSCRIPTION:
+        setTranscript(data.content);
+        break;
+      case DATA_TYPE.SYSTEM:
+        setTranscript(data.content);
+        break;
+    }
+  };
 
-  //     socketRef.current.onmessage = (event) => {
-  //       const { data, error } = JSON.parse(event.data);
-
-  //       if (error) {
-  //         setTranscripts((prev) => [...prev, `System: ${error.content}`]);
-  //       }
-  //       console.log("data", data);
-
-  //       if (data.type === DATA_TYPE.TRANSCRIPTION) {
-  //         if (!data.is_partial) {
-  //           setTranscripts((prev) => [...prev, data.content]);
-  //         }
-  //         setTranscript(data.content);
-  //       }
-  //     };
-  //   }
-
-  //   return () => {
-  //     console.log("Closing WebSocket connection");
-  //     stopRecording(); // Ensure everything is cleaned up
-  //     socketRef.current?.close();
-  //   };
-  // }, []);
+  const onErrorWebSocket = (event: WebSocketEventMap["error"]) => {
+    console.log("WebSocket error", event);
+  };
 
   useEffect(() => {
     if (!audioStream) {
@@ -72,15 +60,16 @@ export const useAudioStream = () => {
           const mediaRecorder = new MediaRecorder(stream);
           const audio: BlobPart[] = [];
 
-          // mediaRecorder.ondataavailable = (event) => {
-          //   if (event.data.size > 0) {
-          //     if (socketRef.current?.readyState === WebSocket.OPEN) {
-          //       socketRef.current.send(event.data);
-          //     } else {
-          //       console.warn("WebSocket is not open.");
-          //     }
-          //   }
-          // };
+          mediaRecorder.ondataavailable = (event) => {
+            console.log("event", event.data);
+            // if (event.data.size > 0) {
+            //   if (socketRef.current?.readyState === WebSocket.OPEN) {
+            //     socketRef.current.send(event.data);
+            //   } else {
+            //     console.warn("WebSocket is not open.");
+            //   }
+            // }
+          };
 
           mediaRecorder.onstop = () => {
             const b = new Blob(audio, { type: "audio/wav" });
@@ -100,17 +89,6 @@ export const useAudioStream = () => {
     };
   }, [audioStream]);
 
-  const handleToggleRecording = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-    if (isRecording) {
-      await stopRecording();
-    } else {
-      await startRecording();
-    }
-  };
-
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -120,11 +98,9 @@ export const useAudioStream = () => {
 
     processor.onaudioprocess = (e) => {
       const input = e.inputBuffer.getChannelData(0); // Float32 [-1.0, 1.0]
-      const int16 = float32ToInt16(input); // Int16 PCM
-      // if (socketRef.current?.readyState === WebSocket.OPEN) {
-      //   // console.log("🎧 Sending buffer of size:", int16.buffer.byteLength);
-      //   socketRef.current.send(int16.buffer); // Send raw PCM
-      // }
+      const int16 = convertFloat32ToInt16(input); // Int16 PCM
+
+      setAudioData(int16.buffer);
     };
 
     source.connect(processor);
@@ -137,14 +113,6 @@ export const useAudioStream = () => {
     setIsRecording(true);
   };
 
-  const float32ToInt16 = (buffer: Float32Array): Int16Array => {
-    const output = new Int16Array(buffer.length);
-    for (let i = 0; i < buffer.length; i++) {
-      const s = Math.max(-1, Math.min(1, buffer[i]));
-      output[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
-    }
-    return output;
-  };
   const stopRecording = () => {
     processorRef.current?.disconnect();
     sourceRef.current?.disconnect();
@@ -162,21 +130,17 @@ export const useAudioStream = () => {
     // }
   };
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-
-    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
   return {
-    handleToggleRecording,
-    formatTime,
-    audioBlob,
+    audioData,
     transcript,
     transcripts,
-    isPause
+    isPause,
+    isRecording,
+    onOpenWebSocket,
+    onCloseWebSocket,
+    onMessageWebSocket,
+    onErrorWebSocket,
+    startRecording,
+    stopRecording,
   };
 };

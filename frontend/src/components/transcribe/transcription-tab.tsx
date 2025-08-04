@@ -1,11 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Text } from "@/components/text";
 import { Contents } from "@/components/contents";
 
-import { ButtonPlayAndPause } from "@/components/transcribe/button-play-and-pause";
 import { TAB_KEYS } from "@/constants/transcription";
 import React, { useState } from "react";
 import { useHandleWebSocket } from "@/hooks/use-handle-web-socket";
@@ -18,10 +18,50 @@ import { GREEN_COLOR_CLASS, RED_COLOR_CLASS } from "@/constants/global";
 
 export const TranscriptionTab = () => {
   const [tab, setTab] = useState(TAB_KEYS.LIVE);
-  const { onStartWebSocket, onStopWebSocket, connectionStatus, readyState } =
-    useHandleWebSocket();
 
-  const { transcript, transcripts, isPause } = useAudioStream();
+  const {
+    transcript,
+    transcripts,
+    isPause,
+    isRecording,
+    onOpenWebSocket,
+    onCloseWebSocket,
+    onMessageWebSocket,
+    onErrorWebSocket,
+    startRecording,
+    stopRecording,
+    audioData,
+  } = useAudioStream();
+
+  const {
+    onStartWebSocket,
+    onStopWebSocket,
+    connectionStatus,
+    readyState,
+    sendMessage,
+  } = useHandleWebSocket({
+    onOpen: onOpenWebSocket,
+    onClose: onCloseWebSocket,
+    onMessage: onMessageWebSocket,
+    onError: onErrorWebSocket,
+  });
+
+  const onStartTranscription = async () => {
+    await onStartWebSocket();
+    startRecording();
+  };
+
+  const onStopTranscription = async () => {
+    await onStopWebSocket();
+    stopRecording();
+  };
+
+  useEffect(() => {
+    if (audioData) {
+      console.log("audioData", audioData);
+      sendMessage(audioData);
+    }
+  }, [audioData, sendMessage]);
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="flex-1">
@@ -36,7 +76,7 @@ export const TranscriptionTab = () => {
           className={cn("size-8 cursor-pointer", {
             "bg-accent": isPause,
           })}
-          onClick={onStartWebSocket}
+          onClick={onStartTranscription}
         >
           {readyState === ReadyState.OPEN ? (
             <Pause className={cn("size-4", GREEN_COLOR_CLASS)} />
@@ -48,7 +88,7 @@ export const TranscriptionTab = () => {
           variant="outline"
           size="icon"
           className={cn("size-8 cursor-pointer")}
-          onClick={onStopWebSocket}
+          onClick={onStopTranscription}
         >
           <Square className={cn("size-4", RED_COLOR_CLASS)} />
         </Button>
@@ -58,8 +98,8 @@ export const TranscriptionTab = () => {
         className="flex flex-col justify-center items-center"
       >
         <Text isStrong className="relative top-[-25px] max-w-1/2 ">
-          {connectionStatus}
-          {/* {transcript} */}
+          {isRecording ? transcript : connectionStatus}
+          {/* {transcripts.length > 0 && transcript} */}
         </Text>
       </TabsContent>
       <TabsContent value={TAB_KEYS.HISTORY} className="flex flex-col">
