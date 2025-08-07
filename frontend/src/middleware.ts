@@ -1,14 +1,15 @@
-// middleware.ts
-import { ACCESS_TOKEN_KEY } from "@/constants/global";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/route-handler";
 
-export function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get(ACCESS_TOKEN_KEY);
+export function middleware(req: NextRequest) {
+  const accessToken = req.cookies.get(ACCESS_TOKEN_KEY)?.value;
+  const refreshToken = req.cookies.get(REFRESH_TOKEN_KEY)?.value;
 
-  if (!accessToken && request.nextUrl.pathname.startsWith("/histories")) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
+  console.log("🔍 middleware access_token:", accessToken);
+  console.log("🔍 middleware refresh_token:", refreshToken);
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"], // すべてのパスに適用
+};
