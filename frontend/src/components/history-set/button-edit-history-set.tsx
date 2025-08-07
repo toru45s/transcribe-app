@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Pen } from "lucide-react";
-import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
+import { useDialogEditHistoryStore } from "@/stores/history-set/use-dialog-edit-history-store";
 
 type HistorySet = {
   id: string;

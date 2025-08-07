@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Flex } from "@/components/flex";
 import { useUserStore } from "@/stores/global/use-user-store";
 import { VERSION } from "@/config";
+import { refreshTokenAction } from "@/actions/tokens";
 
 const menuItems = [
   {
@@ -38,7 +39,7 @@ const menuItems = [
 
 export const SideMenu = () => {
   const { isOpen, onClose } = useSideMenuStore();
-  const { email, token } = useUserStore();
+  const { email, isAuthenticated } = useUserStore();
 
   const { onOpen: onOpenRegisterDialog } = useRegisterDialogStore();
   const { onOpen: onOpenLoginDialog } = useLoginDialogStore();
@@ -54,6 +55,16 @@ export const SideMenu = () => {
 
   const onClickLogout = () => {
     onOpenLogoutAlert();
+  };
+
+  const onClickRefreshToken = async () => {
+    const { data, error } = await refreshTokenAction();
+
+    if (error) {
+      throw new Error(error);
+    }
+
+    console.log("data", data);
   };
 
   return (
@@ -75,7 +86,7 @@ export const SideMenu = () => {
 
         <Flex as="nav" vertical gap="small" className="px-4">
           {menuItems.map((item) => {
-            if (item.isPrivate && !token) {
+            if (item.isPrivate && !isAuthenticated) {
               return null;
             }
 
@@ -88,10 +99,15 @@ export const SideMenu = () => {
         </Flex>
 
         <SheetFooter>
-          {!!token ? (
-            <Button onClick={onClickLogout} variant="outline">
-              Logout
-            </Button>
+          {isAuthenticated ? (
+            <>
+              <Button onClick={onClickRefreshToken} variant="outline">
+                Refresh Token
+              </Button>
+              <Button onClick={onClickLogout} variant="outline">
+                Logout
+              </Button>
+            </>
           ) : (
             <>
               <Button onClick={onClickOpenLoginDialog} variant="outline">

@@ -10,10 +10,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
-import { deleteHistorySet } from "@/actions/history-set";
+import { useAlertDeleteHistorySetStore } from "@/stores/history-set/use-alert-delete-history-set-store";
+// import { deleteHistorySet } from "@/actions/history-set";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 export const AlertDeleteHistorySet = () => {
@@ -28,7 +28,7 @@ export const AlertDeleteHistorySet = () => {
 
   const onClickDeleteHistorySet = async () => {
     try {
-      await deleteHistorySet({ historySetId });
+      // await deleteHistorySet({ historySetId });
       toast.success("History set deleted successfully");
       router.push("/histories");
     } catch (error) {

@@ -1,26 +1,23 @@
+"use server";
+
 import { APP_ROOT } from "@/config";
 
-/**
- * Registers a new user with the provided form data.
- *
- * @param {FormData} formData - The form data containing user registration details.
- * @returns {Promise<any>} The response from the registration API.
- */
-export async function registerUser(formData: FormData) {
+export const registerAction = async (formData: FormData) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
   try {
-    const response = await fetch(`${APP_ROOT}/api/register/`, {
+    const response = await fetch(`${APP_ROOT}/api/v1/register/`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    return response.json();
+    const data = await response.json();
+
+    return data;
   } catch (error) {
-    console.error(error);
+    console.error("Register error:", error);
+    return { data: null, error };
   }
-}
+};

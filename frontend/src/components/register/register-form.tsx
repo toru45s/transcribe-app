@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { registerUser } from "@/actions/register";
+import { registerAction } from "@/actions/register";
 import { toast } from "sonner";
 import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
@@ -55,7 +55,7 @@ export function RegisterForm() {
       formData.append("password", values.password);
       formData.append("password_confirmation", values.password_confirmation);
 
-      const { error } = await registerUser(formData);
+      const { error } = await registerAction(formData);
 
       if (error) {
         throw new Error(error);

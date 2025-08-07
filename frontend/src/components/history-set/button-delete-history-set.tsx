@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { useAlertDeleteHistorySetStore } from "@/stores/use-alert-delete-history-set-store";
+import { useAlertDeleteHistorySetStore } from "@/stores/history-set/use-alert-delete-history-set-store";
 
 type HistorySet = {
   id: string;

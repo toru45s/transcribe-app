@@ -22,7 +22,6 @@ import {
   RED_COLOR_CLASS,
 } from "@/constants/global";
 import { SubtitleLog } from "@/components/subtitle-log";
-import { createHistorySet } from "@/actions/history-set";
 
 import { useUserStore } from "@/stores/global/use-user-store";
 
@@ -60,9 +59,7 @@ export const TranscriptionTab = () => {
 
   const onStartTranscription = async () => {
     if (!!token) {
-      const title = `Subtitle of ${dayjs().format(DATE_FORMAT)}`;
-      const response = await createHistorySet({ title, token });
-      console.log("response", response);
+      // const title = `Subtitle of ${dayjs().format(DATE_FORMAT)}`;
     }
 
     await onStartWebSocket();

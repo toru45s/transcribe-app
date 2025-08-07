@@ -13,8 +13,8 @@ import { Link } from "@/components/link";
 import { Flex } from "@/components/flex";
 
 import { getHistorySetList } from "@/actions/history-set";
-import { ButtonEditHistorySet } from "@/components/histories/button-edit-history-set";
-import { ButtonDeleteHistorySet } from "@/components/histories/button-delete-history-set";
+import { ButtonEditHistorySet } from "@/components/history-set/button-edit-history-set";
+import { ButtonDeleteHistorySet } from "@/components/history-set/button-delete-history-set";
 import { Text } from "@/components/text";
 
 export default async function Histories() {

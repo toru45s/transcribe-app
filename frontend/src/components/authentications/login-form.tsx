@@ -13,10 +13,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { loginUser } from "@/actions/authentications";
 import { toast } from "sonner";
 import { useUserStore } from "@/stores/global/use-user-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
+import { loginAction } from "@/actions/tokens";
 
 const formSchema = z.object({
   email: z.email({
@@ -45,14 +45,14 @@ export function LoginForm() {
       formData.append("email", values.email);
       formData.append("password", values.password);
 
-      const { data, error } = await loginUser(formData);
+      const { data, error } = await loginAction(formData);
 
       if (error) {
         throw new Error(error);
       }
 
       if (data?.email) {
-        login({ token: data.access, email: data.email });
+        login({ email: data.email });
       }
 
       onClose();

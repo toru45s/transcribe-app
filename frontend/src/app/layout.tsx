@@ -6,8 +6,8 @@ import { LoginDialog } from "@/components/authentications/login-dialog";
 import { LogoutAlert } from "@/components/authentications/logout-alert";
 import { SideMenu } from "@/components/global/side-menu";
 import { Toaster } from "@/components/ui/sonner";
-import { AlertDeleteHistorySet } from "@/components/histories/alert-delete-history-set";
-import { DialogEditHistorySet } from "@/components/histories/dialog-edit-history-set";
+import { AlertDeleteHistorySet } from "@/components/history-set/alert-delete-history-set";
+import { DialogEditHistorySet } from "@/components/history-set/dialog-edit-history-set";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

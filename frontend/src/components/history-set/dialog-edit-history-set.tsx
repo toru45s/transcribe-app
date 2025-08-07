@@ -22,8 +22,8 @@ import {
 } from "@/components/ui/drawer";
 
 import { DESKTOP_BREAKPOINT } from "@/constants/global";
-import { useDialogEditHistoryStore } from "@/stores/use-dialog-edit-history-store";
-import { FormEditHistorySet } from "./form-edit-history-set";
+import { useDialogEditHistoryStore } from "@/stores/history-set/use-dialog-edit-history-store";
+import { FormEditHistorySet } from "@/components/history-set/form-edit-history-set";
 
 export function DialogEditHistorySet() {
   const { isOpen, onClose } = useDialogEditHistoryStore();

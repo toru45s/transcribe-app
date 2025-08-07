@@ -5,8 +5,8 @@ import { Heading } from "@/components/heading";
 import { SubtitleLog } from "@/components/subtitle-log";
 import { getHistories } from "@/actions/histories";
 import { getHistorySet } from "@/actions/history-set";
-import { ButtonEditHistorySet } from "@/components/histories/button-edit-history-set";
-import { ButtonDeleteHistorySet } from "@/components/histories/button-delete-history-set";
+import { ButtonEditHistorySet } from "@/components/history-set/button-edit-history-set";
+import { ButtonDeleteHistorySet } from "@/components/history-set/button-delete-history-set";
 import { Text } from "@/components/text";
 
 type Props = {
