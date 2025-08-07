@@ -38,7 +38,7 @@ const menuItems = [
 
 export const SideMenu = () => {
   const { isOpen, onClose } = useSideMenuStore();
-  const { email, isLoggedIn } = useUserStore();
+  const { email, token } = useUserStore();
 
   const { onOpen: onOpenRegisterDialog } = useRegisterDialogStore();
   const { onOpen: onOpenLoginDialog } = useLoginDialogStore();
@@ -75,7 +75,7 @@ export const SideMenu = () => {
 
         <Flex as="nav" vertical gap="small" className="px-4">
           {menuItems.map((item) => {
-            if (item.isPrivate && !isLoggedIn) {
+            if (item.isPrivate && !token) {
               return null;
             }
 
@@ -88,7 +88,7 @@ export const SideMenu = () => {
         </Flex>
 
         <SheetFooter>
-          {isLoggedIn ? (
+          {!!token ? (
             <Button onClick={onClickLogout} variant="outline">
               Logout
             </Button>

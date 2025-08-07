@@ -1,22 +1,30 @@
 "use server";
 
 import { API_ROOT, APP_ROOT } from "@/config";
-import { ACCESS_TOKEN_KEY, STATUS_CODE_UNAUTHORIZED } from "@/constants/global";
+import { STATUS_CODE_UNAUTHORIZED } from "@/constants/global";
 import { logout } from "@/actions/authentications";
 import { getAccessToken } from "@/lib/api";
 
-export const createHistorySet = async ({ title }: { title: string }) => {
+export const createHistorySet = async ({
+  title,
+  token,
+}: {
+  title: string;
+  token: string;
+}) => {
   try {
     const response = await fetch(`${APP_ROOT}/api/history-set/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ title }),
     });
+
     return response.json();
   } catch (error) {
-    console.error("Error creating history set:", error);
+    console.error(error);
   }
 };
 
@@ -62,14 +70,8 @@ export const deleteHistorySet = async ({
 };
 
 export const getHistorySetList = async () => {
-  const accessToken = await getAccessToken();
-
-  const response = await fetch(`${API_ROOT}/history-set/`, {
+  const response = await fetch(`${APP_ROOT}/api/history-set/`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
   });
 
   if (response.status === STATUS_CODE_UNAUTHORIZED) {

@@ -19,7 +19,7 @@ export async function registerUser(formData: FormData) {
       body: JSON.stringify({ email, password }),
     });
 
-    return response;
+    return response.json();
   } catch (error) {
     console.error(error);
   }

@@ -19,7 +19,7 @@ import { Text } from "@/components/text";
 
 export default async function Histories() {
   const breadcrumbItems = [{ label: "Subtitle Histories", href: "/histories" }];
-  // const { data: historySetList } = await getHistorySetList();
+  const { data: historySetList } = await getHistorySetList();
 
   const historySetList: { id: string; title: string }[] = [];
 

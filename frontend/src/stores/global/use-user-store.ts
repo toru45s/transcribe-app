@@ -2,24 +2,25 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type UserState = {
-  isLoggedIn: boolean;
+  token: string | null;
   email: string | null;
-  login: (email: string) => void;
+  login: ({ token, email }: { token: string; email: string }) => void;
   logout: () => void;
 };
 
 export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
-      isLoggedIn: false,
+      token: null,
       email: null,
-      login: (email: string) => set({ isLoggedIn: true, email }),
-      logout: () => set({ isLoggedIn: false, email: null }),
+      login: ({ token, email }: { token: string; email: string }) =>
+        set({ token, email }),
+      logout: () => set({ token: null, email: null }),
     }),
     {
       name: "user-store",
       partialize: (state) => ({
-        isLoggedIn: state.isLoggedIn,
+        token: state.token,
         email: state.email,
       }),
     }

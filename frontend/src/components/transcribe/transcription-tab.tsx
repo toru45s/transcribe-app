@@ -30,7 +30,7 @@ export const TranscriptionTab = () => {
   const [tab, setTab] = useState(TAB_KEYS.LIVE);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { isLoggedIn } = useUserStore();
+  const { token } = useUserStore();
 
   const {
     transcript,
@@ -59,9 +59,10 @@ export const TranscriptionTab = () => {
   });
 
   const onStartTranscription = async () => {
-    if (isLoggedIn) {
+    if (!!token) {
       const title = `Subtitle of ${dayjs().format(DATE_FORMAT)}`;
-      await createHistorySet({ title });
+      const response = await createHistorySet({ title, token });
+      console.log("response", response);
     }
 
     await onStartWebSocket();

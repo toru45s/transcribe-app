@@ -5,7 +5,10 @@ import { cookies } from "next/headers";
 import { ACCESS_TOKEN_KEY } from "@/constants/global";
 import { getRefreshToken } from "@/lib/api";
 
-export async function loginUser(email: string, password: string) {
+export async function loginUser(formData: FormData) {
+  const email = formData.get("email");
+  const password = formData.get("password");
+
   try {
     const response = await fetch(`${APP_ROOT}/api/login/`, {
       method: "POST",
@@ -15,17 +18,9 @@ export async function loginUser(email: string, password: string) {
       body: JSON.stringify({ email, password }),
     });
 
-    const responseData = await response.json();
-
-    const { error } = responseData;
-
-    if (error) {
-      throw new Error(error);
-    }
-
-    return responseData;
+    return response.json();
   } catch (error) {
-    return { error };
+    console.error(error);
   }
 }
 

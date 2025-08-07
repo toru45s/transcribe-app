@@ -51,8 +51,8 @@ export function LoginForm() {
         throw new Error(error);
       }
 
-      if (data.email) {
-        login(data.email);
+      if (data?.email) {
+        login({ token: data.access, email: data.email });
       }
 
       onClose();
