@@ -1,8 +1,6 @@
-import { APP_ROOT } from "@/config";
-
 export const registerService = async (email: string, password: string) => {
   try {
-    const response = await fetch(`${APP_ROOT}/api/v1/register/`, {
+    const response = await fetch(`/api/v1/register/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

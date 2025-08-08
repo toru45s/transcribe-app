@@ -1,8 +1,6 @@
-import { APP_ROOT } from "@/config";
-
 export const logoutService = async () => {
   try {
-    const response = await fetch(`${APP_ROOT}/api/v1/token/logout/`, {
+    const response = await fetch(`/api/v1/token/logout/`, {
       method: "POST",
     });
 
@@ -17,7 +15,7 @@ export const logoutService = async () => {
 
 export const loginService = async (email: string, password: string) => {
   try {
-    const response = await fetch(`${APP_ROOT}/api/v1/token/`, {
+    const response = await fetch(`/api/v1/token/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -35,7 +33,7 @@ export const loginService = async (email: string, password: string) => {
 
 export const refreshTokenService = async () => {
   try {
-    const response = await fetch(`${APP_ROOT}/api/v1/token/refresh/`, {
+    const response = await fetch(`/api/v1/token/refresh/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
