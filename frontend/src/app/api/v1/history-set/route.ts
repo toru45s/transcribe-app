@@ -1,29 +1,30 @@
+import { API_ROOT_V1 } from "@/config";
 import { NextResponse } from "next/server";
-
-export async function POST() {
-  return NextResponse.json({
-    data: null,
-    error: "Not implemented",
-  });
-}
+import { apiClient } from "@/lib/bff/api-client";
 
 export async function GET() {
-  return NextResponse.json({
-    data: null,
-    error: "Not implemented",
-  });
+  try {
+    const response = await apiClient(`${API_ROOT_V1}/history-set/`, "GET");
+
+    const responseData = await response.json();
+    return NextResponse.json(responseData);
+  } catch (error) {
+    console.log("error", error);
+    return NextResponse.json({ error });
+  }
 }
 
-export async function DELETE() {
-  return NextResponse.json({
-    data: null,
-    error: "Not implemented",
-  });
-}
+export async function POST(request: Request) {
+  try {
+    const { title } = await request.json();
+    const response = await apiClient(`${API_ROOT_V1}/history-set/`, "POST", {
+      title,
+    });
 
-export async function PUT() {
-  return NextResponse.json({
-    data: null,
-    error: "Not implemented",
-  });
+    const responseData = await response.json();
+    return NextResponse.json(responseData);
+  } catch (error) {
+    console.log("error", error);
+    return NextResponse.json({ error });
+  }
 }

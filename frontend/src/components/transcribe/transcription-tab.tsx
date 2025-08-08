@@ -15,7 +15,7 @@ import { ReadyState } from "react-use-websocket";
 import { useAudioStream } from "@/hooks/use-audio-stream";
 import { Pause, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client/utils";
 import {
   DATE_FORMAT,
   GREEN_COLOR_CLASS,

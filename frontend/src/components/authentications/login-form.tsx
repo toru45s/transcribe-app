@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useUserStore } from "@/stores/global/use-user-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
-import { loginAction } from "@/actions/tokens";
+import { loginService } from "@/services/token-sercices";
 
 const formSchema = z.object({
   email: z.email({
@@ -41,11 +41,7 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const formData = new FormData();
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-
-      const { data, error } = await loginAction(formData);
+      const { data, error } = await loginService(values.email, values.password);
 
       if (error) {
         throw new Error(error);

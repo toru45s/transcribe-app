@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client/utils";
 import { KEY_COLOR_CLASS } from "@/constants/global";
 
 type LinkProps = {

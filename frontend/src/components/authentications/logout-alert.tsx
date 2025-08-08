@@ -14,7 +14,7 @@ import { useUserStore } from "@/stores/global/use-user-store";
 import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
 import { useSideMenuStore } from "@/stores/global/use-side-menu-store";
 import { useRouter } from "next/navigation";
-import { logoutAction } from "@/actions/tokens";
+import { logoutService } from "@/services/token-sercices";
 
 export const LogoutAlert = () => {
   const { isOpen, onClose: onCloseLogoutAlert } = useLogoutAlertStore();
@@ -28,7 +28,7 @@ export const LogoutAlert = () => {
     router.push("/logged-out");
 
     logout();
-    await logoutAction();
+    await logoutService();
   };
 
   return (

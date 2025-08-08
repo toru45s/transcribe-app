@@ -33,7 +33,7 @@ export async function POST() {
       );
     }
 
-    const data = await response.json();
+    const { data } = await response.json();
     const accessTokenNew = data.access;
 
     if (!accessTokenNew) {
@@ -43,13 +43,14 @@ export async function POST() {
       );
     }
 
-    const responseNext = NextResponse.json({ success: true });
+    const responseNext = NextResponse.json(data);
 
     responseNext.cookies.set(ACCESS_TOKEN_KEY, accessTokenNew, {
       httpOnly: true,
       secure: !IS_DEV,
       path: "/",
       sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return responseNext;

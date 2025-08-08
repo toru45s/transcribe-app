@@ -15,11 +15,11 @@ import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
 import { KEY_COLOR_CLASS } from "@/constants/global";
 import { Link } from "@/components/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client/utils";
 import { Flex } from "@/components/flex";
 import { useUserStore } from "@/stores/global/use-user-store";
 import { VERSION } from "@/config";
-import { refreshTokenAction } from "@/actions/tokens";
+import { refreshTokenService } from "@/services/token-sercices";
 
 const menuItems = [
   {
@@ -58,13 +58,15 @@ export const SideMenu = () => {
   };
 
   const onClickRefreshToken = async () => {
-    const { data, error } = await refreshTokenAction();
+    try {
+      const { data } = await refreshTokenService();
 
-    if (error) {
-      throw new Error(error);
+      if (data?.access) {
+        console.log("access", data.access);
+      }
+    } catch (error) {
+      console.log("error", error);
     }
-
-    console.log("data", data);
   };
 
   return (
@@ -101,11 +103,11 @@ export const SideMenu = () => {
         <SheetFooter>
           {isAuthenticated ? (
             <>
-              <Button onClick={onClickRefreshToken} variant="outline">
-                Refresh Token
-              </Button>
               <Button onClick={onClickLogout} variant="outline">
                 Logout
+              </Button>
+              <Button onClick={onClickRefreshToken} variant="outline">
+                Refresh Token
               </Button>
             </>
           ) : (

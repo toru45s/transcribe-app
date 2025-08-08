@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { registerAction } from "@/actions/register";
+import { registerService } from "@/services/register-services";
 import { toast } from "sonner";
 import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
@@ -50,12 +50,7 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const formData = new FormData();
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-      formData.append("password_confirmation", values.password_confirmation);
-
-      const { error } = await registerAction(formData);
+      const { error } = await registerService(values.email, values.password);
 
       if (error) {
         throw new Error(error);

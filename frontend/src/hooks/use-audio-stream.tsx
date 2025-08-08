@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { convertFloat32ToInt16 } from "@/services/transcriptService";
+import { convertFloat32ToInt16 } from "@/services/transcript-service";
 
 export const DATA_TYPE = {
   TRANSCRIPTION: "transcription",

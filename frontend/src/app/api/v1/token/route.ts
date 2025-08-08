@@ -14,15 +14,16 @@ export async function POST(request: Request) {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json();
-    const responseNext = NextResponse.json(data);
-    const { access, refresh } = data;
+    const responseData = await response.json();
+    const responseNext = NextResponse.json(responseData);
+    const { access, refresh } = responseData.data;
 
     responseNext.cookies.set(ACCESS_TOKEN_KEY, access, {
       httpOnly: true,
       secure: !IS_DEV,
       path: "/",
       sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     responseNext.cookies.set(REFRESH_TOKEN_KEY, refresh, {
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
       secure: !IS_DEV,
       path: "/",
       sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return responseNext;

@@ -1,11 +1,6 @@
-"use server";
-
 import { APP_ROOT } from "@/config";
 
-export const registerAction = async (formData: FormData) => {
-  const email = formData.get("email");
-  const password = formData.get("password");
-
+export const registerService = async (email: string, password: string) => {
   try {
     const response = await fetch(`${APP_ROOT}/api/v1/register/`, {
       method: "POST",
