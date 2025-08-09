@@ -23,7 +23,7 @@ import {
 
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 import { LoginForm } from "@/components/authentications/login-form";
-import { DESKTOP_BREAKPOINT } from "@/constants/global";
+import { DESKTOP_BREAKPOINT } from "@/constants/client/global";
 
 export function LoginDialog() {
   const { isOpen, onClose } = useLoginDialogStore();

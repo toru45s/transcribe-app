@@ -13,7 +13,7 @@ import { useSideMenuStore } from "@/stores/global/use-side-menu-store";
 import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
 import { useLogoutAlertStore } from "@/stores/use-login-alert-store";
-import { KEY_COLOR_CLASS } from "@/constants/global";
+import { KEY_COLOR_CLASS } from "@/constants/client/global";
 import { Link } from "@/components/link";
 import { cn } from "@/lib/client/utils";
 import { Flex } from "@/components/flex";

@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/route-handler";
+import {
+  ACCESS_TOKEN_KEY,
+  COOKIE_OPTIONS,
+  REFRESH_TOKEN_KEY,
+} from "@/constants/auth";
+import { HTTP_STATUS } from "@/constants/http";
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
+  const response = new NextResponse(null, { status: HTTP_STATUS.NO_CONTENT });
 
   response.cookies.set(ACCESS_TOKEN_KEY, "", {
-    path: "/",
+    ...COOKIE_OPTIONS,
     maxAge: 0,
   });
 
   response.cookies.set(REFRESH_TOKEN_KEY, "", {
-    path: "/",
+    ...COOKIE_OPTIONS,
     maxAge: 0,
   });
 

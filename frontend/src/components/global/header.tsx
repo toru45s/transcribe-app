@@ -1,7 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/heading";
-import { DESKTOP_BREAKPOINT, KEY_COLOR_CLASS } from "@/constants/global";
+import { DESKTOP_BREAKPOINT, KEY_COLOR_CLASS } from "@/constants/client/global";
 import { Link } from "@/components/link";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { Flex } from "@/components/flex";

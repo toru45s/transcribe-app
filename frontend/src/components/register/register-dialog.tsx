@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/drawer";
 import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
 import { RegisterForm } from "./register-form";
-import { DESKTOP_BREAKPOINT } from "@/constants/global";
+import { DESKTOP_BREAKPOINT } from "@/constants/client/global";
 
 export function RegisterDialog() {
   const { isOpen, onClose } = useRegisterDialogStore();

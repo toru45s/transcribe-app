@@ -1,7 +1,14 @@
-import { API_ROOT_V1, IS_DEV } from "@/config";
+import { API_ROOT_V1 } from "@/config";
 import { NextResponse } from "next/server";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/route-handler";
+import {
+  ACCESS_TOKEN_KEY,
+  COOKIE_OPTIONS,
+  REFRESH_TOKEN_KEY,
+} from "@/constants/auth";
 import { cookies } from "next/headers";
+import { ERROR_CODES, ERROR_MESSAGES, HTTP_STATUS } from "@/constants/http";
+import { networkErrorResponse } from "@/lib/bff/response";
+import { apiClient } from "@/lib/bff/api-client";
 
 export async function POST() {
   const cookieStore = await cookies();
@@ -11,51 +18,39 @@ export async function POST() {
     return NextResponse.json(
       {
         data: null,
-        error: "No refresh token found",
+        error: {
+          code: ERROR_CODES.UNAUTHORIZED,
+          message: ERROR_MESSAGES.UNAUTHORIZED,
+        },
       },
-      {
-        status: 401,
-      }
+      { status: HTTP_STATUS.UNAUTHORIZED }
     );
   }
 
   try {
-    const response = await fetch(`${API_ROOT_V1}/token/refresh/`, {
+    const response = await apiClient(`${API_ROOT_V1}/token/refresh/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh: refreshToken }),
+      body: { refresh: refreshToken },
+      requireAuth: false,
     });
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { data: null, error: "Invalid refresh token" },
-        { status: 401 }
-      );
-    }
+    const responseData = await response.json();
+    const { access: accessTokenNew } = responseData.data;
 
-    const { data } = await response.json();
-    const accessTokenNew = data.access;
-
-    if (!accessTokenNew) {
-      return NextResponse.json(
-        { data: null, error: "No access token returned from backend" },
-        { status: 500 }
-      );
-    }
-
-    const responseNext = NextResponse.json(data);
-
-    responseNext.cookies.set(ACCESS_TOKEN_KEY, accessTokenNew, {
-      httpOnly: true,
-      secure: !IS_DEV,
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+    const responseNext = NextResponse.json(responseData, {
+      status: response.status,
     });
+
+    if (response.ok && accessTokenNew) {
+      responseNext.cookies.set(
+        ACCESS_TOKEN_KEY,
+        accessTokenNew,
+        COOKIE_OPTIONS
+      );
+    }
 
     return responseNext;
-  } catch (err) {
-    console.error("Refresh token error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  } catch (error) {
+    return networkErrorResponse(error);
   }
 }

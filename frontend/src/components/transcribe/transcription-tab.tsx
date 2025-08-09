@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/text";
 import { Contents } from "@/components/contents";
 
-import { TAB_KEYS } from "@/constants/transcription";
+import { TAB_KEYS } from "@/constants/client/transcription";
 import React, { useState } from "react";
 import { useHandleWebSocket } from "@/hooks/use-handle-web-socket";
 import { ReadyState } from "react-use-websocket";
@@ -20,7 +20,7 @@ import {
   DATE_FORMAT,
   GREEN_COLOR_CLASS,
   RED_COLOR_CLASS,
-} from "@/constants/global";
+} from "@/constants/client/global";
 import { SubtitleLog } from "@/components/subtitle-log";
 
 import { useUserStore } from "@/stores/global/use-user-store";

@@ -1,27 +1,56 @@
 import { cookies } from "next/headers";
-import { ACCESS_TOKEN_KEY } from "@/constants/route-handler";
+import { ACCESS_TOKEN_KEY } from "@/constants/auth";
 import { NextResponse } from "next/server";
+import { ERROR_CODES, ERROR_MESSAGES, HTTP_STATUS } from "@/constants/http";
+import { networkErrorResponse } from "./response";
+
+type ApiClientOptions = {
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
+  body?: unknown;
+  requireAuth?: boolean;
+};
+
+const shouldSendBody = (method: string) =>
+  !["GET", "HEAD", "DELETE"].includes(method);
 
 export const apiClient = async (
   url: string,
-  method: string,
-  body?: unknown
+  options: ApiClientOptions = {}
 ) => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
+  const { method = "GET", body, requireAuth = true } = options;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
 
-  if (!accessToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (requireAuth) {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          data: null,
+          error: {
+            code: ERROR_CODES.UNAUTHORIZED,
+            message: ERROR_MESSAGES.UNAUTHORIZED,
+          },
+        },
+        { status: HTTP_STATUS.UNAUTHORIZED }
+      );
+    }
+
+    headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  const response = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(url, {
+      method,
+      headers,
+      body: body && shouldSendBody(method) ? JSON.stringify(body) : undefined,
+    });
 
-  return response;
+    return response;
+  } catch (error) {
+    return networkErrorResponse(error);
+  }
 };

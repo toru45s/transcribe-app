@@ -1,6 +1,6 @@
 import NextLink from "next/link";
 import { cn } from "@/lib/client/utils";
-import { KEY_COLOR_CLASS } from "@/constants/global";
+import { KEY_COLOR_CLASS } from "@/constants/client/global";
 
 type LinkProps = {
   href: string;

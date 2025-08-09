@@ -1,15 +1,11 @@
 import { API_ROOT_V1 } from "@/config";
-import { NextResponse } from "next/server";
 import { apiClient } from "@/lib/bff/api-client";
+import { networkErrorResponse } from "@/lib/bff/response";
 
 export async function GET() {
   try {
-    const response = await apiClient(`${API_ROOT_V1}/me/`, "GET");
-
-    const responseData = await response.json();
-    return NextResponse.json(responseData);
+    return await apiClient(`${API_ROOT_V1}/me/`);
   } catch (error) {
-    console.log("error", error);
-    return NextResponse.json({ error });
+    return networkErrorResponse(error);
   }
 }

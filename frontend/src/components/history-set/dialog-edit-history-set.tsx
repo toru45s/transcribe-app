@@ -21,7 +21,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 
-import { DESKTOP_BREAKPOINT } from "@/constants/global";
+import { DESKTOP_BREAKPOINT } from "@/constants/client/global";
 import { useDialogEditHistoryStore } from "@/stores/history-set/use-dialog-edit-history-store";
 import { FormEditHistorySet } from "@/components/history-set/form-edit-history-set";
 
