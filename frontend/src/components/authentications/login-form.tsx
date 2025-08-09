@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useUserStore } from "@/stores/global/use-user-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
-import { loginService } from "@/services/token-sercices";
+import { loginService } from "@/services/api-services";
 
 const formSchema = z.object({
   email: z.email({

@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { registerService } from "@/services/register-services";
+import { registerService } from "@/services/api-services";
 import { toast } from "sonner";
 import { useRegisterDialogStore } from "@/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/stores/use-login-dialog-store";
@@ -50,10 +50,20 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const { error } = await registerService(values.email, values.password);
+      const { data, error } = await registerService(
+        values.email,
+        values.password
+      );
 
       if (error) {
-        throw new Error(error);
+        toast.error("Account creation failed.", {
+          description: "Please try again.",
+        });
+
+        form.setError("email", { type: "server" });
+        form.setError("password", { type: "server" });
+        form.setError("password_confirmation", { type: "server" });
+        return;
       }
 
       toast.success("Account created successfully.", {
@@ -61,19 +71,18 @@ export function RegisterForm() {
       });
 
       form.reset();
-
       onClose();
       onOpen();
+
+      console.log("data", data);
     } catch {
-      form.setError("email", {});
-
-      form.setError("password", {});
-
-      form.setError("password_confirmation", {});
-
       toast.error("Account creation failed.", {
         description: "Please try again.",
       });
+
+      form.setError("email", { type: "server" });
+      form.setError("password", { type: "server" });
+      form.setError("password_confirmation", { type: "server" });
     }
   }
 

@@ -8,104 +8,103 @@ import {
   HistorySetResponse,
   DeleteResponse,
   HistoryResponse,
-} from "@/types/client/resposes";
+} from "@/types/client/responses";
+import { API_ROUTES } from "@/constants/client/routes";
 
-const registerService = async (
+const registerService = (
   email: string,
   password: string
 ): Promise<ApiEnvelope<RegisterResponse>> => {
-  return await apiClient<RegisterResponse>(`/api/v1/register/`, {
+  return apiClient<RegisterResponse>(API_ROUTES.register, {
     method: "POST",
     body: { email, password },
   });
 };
 
-const logoutService = async (): Promise<ApiEnvelope<DeleteResponse>> => {
-  return await apiClient<DeleteResponse>(`/api/v1/token/logout/`, {
+const logoutService = (): Promise<ApiEnvelope<DeleteResponse>> => {
+  return apiClient<DeleteResponse>(API_ROUTES.tokenLogout, {
     method: "POST",
   });
 };
 
-const loginService = async (
+const loginService = (
   email: string,
   password: string
 ): Promise<ApiEnvelope<LoginResponse>> => {
-  return await apiClient<LoginResponse>(`/api/v1/token/`, {
+  return apiClient<LoginResponse>(API_ROUTES.token, {
     method: "POST",
     body: { email, password },
   });
 };
 
-const refreshTokenService = async (): Promise<
-  ApiEnvelope<RefreshTokenResponse>
-> => {
-  return await apiClient<RefreshTokenResponse>(`/api/v1/token/refresh/`, {
+const refreshTokenService = (): Promise<ApiEnvelope<RefreshTokenResponse>> => {
+  return apiClient<RefreshTokenResponse>(API_ROUTES.tokenRefresh, {
     method: "POST",
   });
 };
 
-const meService = async (): Promise<ApiEnvelope<MeResponse>> => {
-  return await apiClient<MeResponse>(`/api/v1/me/`, {
+const meService = (): Promise<ApiEnvelope<MeResponse>> => {
+  return apiClient<MeResponse>(API_ROUTES.me, {
     method: "GET",
   });
 };
 
-const listHistorySetService = async (): Promise<
+const listHistorySetService = (): Promise<
   ApiEnvelope<HistorySetResponse[]>
 > => {
-  return await apiClient<HistorySetResponse[]>(`/api/v1/history-set/`, {
+  return apiClient<HistorySetResponse[]>(API_ROUTES.historySet, {
     method: "GET",
   });
 };
 
-const retrieveHistorySetService = async (
+const retrieveHistorySetService = (
   id: string
 ): Promise<ApiEnvelope<HistorySetResponse>> => {
-  return await apiClient<HistorySetResponse>(`/api/v1/history-set/${id}/`, {
+  return apiClient<HistorySetResponse>(API_ROUTES.historySetId(id), {
     method: "GET",
   });
 };
 
-const postHistorySetService = async (
+const postHistorySetService = (
   title: string
 ): Promise<ApiEnvelope<HistorySetResponse>> => {
-  return await apiClient<HistorySetResponse>(`/api/v1/history-set/`, {
+  return apiClient<HistorySetResponse>(API_ROUTES.historySet, {
     method: "POST",
     body: { title },
   });
 };
 
-const patchHistorySetService = async (
+const patchHistorySetService = (
   id: string,
   title: string
 ): Promise<ApiEnvelope<HistorySetResponse>> => {
-  return await apiClient<HistorySetResponse>(`/api/v1/history-set/${id}/`, {
+  return apiClient<HistorySetResponse>(API_ROUTES.historySetId(id), {
     method: "PATCH",
     body: { title },
   });
 };
 
-const deleteHistorySetService = async (
+const deleteHistorySetService = (
   id: string
 ): Promise<ApiEnvelope<DeleteResponse>> => {
-  return await apiClient<DeleteResponse>(`/api/v1/history-set/${id}/`, {
+  return apiClient<DeleteResponse>(API_ROUTES.historySetId(id), {
     method: "DELETE",
   });
 };
 
-const listHistoryService = async (
+const listHistoryService = (
   id: string
-): Promise<ApiEnvelope<HistoryResponse>> => {
-  return await apiClient<HistoryResponse>(`/api/v1/history-set/${id}/history`, {
+): Promise<ApiEnvelope<HistoryResponse[]>> => {
+  return apiClient<HistoryResponse[]>(API_ROUTES.history(id), {
     method: "GET",
   });
 };
 
-const postHistoryService = async (
+const postHistoryService = (
   id: string,
   content: string
 ): Promise<ApiEnvelope<HistoryResponse>> => {
-  return await apiClient<HistoryResponse>(`/api/v1/history-set/${id}/history`, {
+  return apiClient<HistoryResponse>(API_ROUTES.history(id), {
     method: "POST",
     body: { content },
   });

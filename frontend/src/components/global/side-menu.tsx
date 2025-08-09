@@ -19,7 +19,7 @@ import { cn } from "@/lib/client/utils";
 import { Flex } from "@/components/flex";
 import { useUserStore } from "@/stores/global/use-user-store";
 import { VERSION } from "@/config";
-import { refreshTokenService } from "@/services/token-sercices";
+import { refreshTokenService } from "@/services/api-services";
 
 const menuItems = [
   {
