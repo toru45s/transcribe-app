@@ -4,14 +4,13 @@ import { NextResponse } from "next/server";
 import { ERROR_CODES, ERROR_MESSAGES, HTTP_STATUS } from "@/constants/http";
 import { networkErrorResponse } from "./response";
 
+import { shouldSendBody } from "@/lib/api";
+
 type ApiClientOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
   requireAuth?: boolean;
 };
-
-const shouldSendBody = (method: string) =>
-  !["GET", "HEAD", "DELETE"].includes(method);
 
 export const apiClient = async (
   url: string,
