@@ -1,9 +1,9 @@
 "use client"; // Error boundaries must be Client Components
 
-import { Contents } from "@/components/contents";
-import { Header } from "@/components/global/header";
-import { Heading } from "@/components/heading";
-import { Link } from "@/components/link";
+import { Contents } from "@/client/components/contents";
+import { Header } from "@/client/components/header";
+import { Heading } from "@/client/components/heading";
+import { Link } from "@/client/components/link";
 import { useEffect } from "react";
 
 export default function Error({

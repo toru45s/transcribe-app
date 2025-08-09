@@ -1,5 +1,5 @@
-import { Header } from "@/components/global/header";
-import { TranscriptionTab } from "@/components/transcribe/transcription-tab";
+import { Header } from "@/client/components/header";
+import { TranscriptionTab } from "@/features/transcript/components/transcription-tab";
 
 /**
  * Home page of the Live Transcription App.

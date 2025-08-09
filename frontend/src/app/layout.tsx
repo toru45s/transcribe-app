@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { RegisterDialog } from "@/components/register/register-dialog";
-import { LoginDialog } from "@/components/authentications/login-dialog";
-import { LogoutAlert } from "@/components/authentications/logout-alert";
-import { SideMenu } from "@/components/global/side-menu";
-import { Toaster } from "@/components/ui/sonner";
-import { AlertDeleteHistorySet } from "@/components/history-set/alert-delete-history-set";
-import { DialogEditHistorySet } from "@/components/history-set/dialog-edit-history-set";
+import { RegisterDialog } from "@/features/auth/register/components/register-dialog";
+import { LoginDialog } from "@/features/auth/token/components/login-dialog";
+import { LogoutAlert } from "@/features/auth/token/components/logout-alert";
+import { SideMenu } from "@/client/components/side-menu";
+import { Toaster } from "@/client/components/ui/sonner";
+import { AlertDeleteHistorySet } from "@/features/history-set/components/alert-delete-history-set";
+import { DialogEditHistorySet } from "@/features/history-set/components/dialog-edit-history-set";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

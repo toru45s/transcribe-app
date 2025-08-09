@@ -1,12 +1,12 @@
-import { API_ROOT_V1 } from "@/config";
+import { API_ROOT_V1 } from "@/shared/constants/config";
 import { NextResponse } from "next/server";
 import {
   ACCESS_TOKEN_KEY,
   COOKIE_OPTIONS,
   REFRESH_TOKEN_KEY,
-} from "@/constants/auth";
-import { networkErrorResponse } from "@/lib/bff/response";
-import { apiClient } from "@/lib/bff/api-client";
+} from "@/bff/constants/auth";
+import { networkErrorResponse } from "@/shared/lib/bff/response";
+import { apiClient } from "@/shared/lib/bff/api-client";
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();

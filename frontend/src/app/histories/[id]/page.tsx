@@ -1,13 +1,13 @@
-import { Contents } from "@/components/contents";
-import { Flex } from "@/components/flex";
-import { Header } from "@/components/global/header";
-import { Heading } from "@/components/heading";
-import { SubtitleLog } from "@/components/subtitle-log";
+import { Contents } from "@/client/components/contents";
+import { Flex } from "@/client/components/flex";
+import { Header } from "@/client/components/header";
+import { Heading } from "@/client/components/heading";
+import { SubtitleLog } from "@/client/components/subtitle-log";
 import { getHistories } from "@/actions/histories";
 import { getHistorySet } from "@/actions/history-set";
-import { ButtonEditHistorySet } from "@/components/history-set/button-edit-history-set";
-import { ButtonDeleteHistorySet } from "@/components/history-set/button-delete-history-set";
-import { Text } from "@/components/text";
+import { ButtonEditHistorySet } from "@/features/history-set/components/button-edit-history-set";
+import { ButtonDeleteHistorySet } from "@/features/history-set/components/button-delete-history-set";
+import { Text } from "@/client/components/text";
 
 type Props = {
   params: Promise<{ id: string }>;

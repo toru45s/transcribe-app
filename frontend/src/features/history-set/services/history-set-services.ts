@@ -1,0 +1,50 @@
+import { apiClient } from "@/shared/lib/api-client";
+import { ApiEnvelope } from "@/client/types/api";
+import {
+  HistorySetResponse,
+  DeleteResponse,
+} from "@/shared/types/client/responses";
+import { API_ROUTES } from "@/client/constants/routes";
+
+export const listHistorySetService = (): Promise<
+  ApiEnvelope<HistorySetResponse[]>
+> => {
+  return apiClient<HistorySetResponse[]>(API_ROUTES.historySet, {
+    method: "GET",
+  });
+};
+
+export const retrieveHistorySetService = (
+  id: string
+): Promise<ApiEnvelope<HistorySetResponse>> => {
+  return apiClient<HistorySetResponse>(API_ROUTES.historySetId(id), {
+    method: "GET",
+  });
+};
+
+export const postHistorySetService = (
+  title: string
+): Promise<ApiEnvelope<HistorySetResponse>> => {
+  return apiClient<HistorySetResponse>(API_ROUTES.historySet, {
+    method: "POST",
+    body: { title },
+  });
+};
+
+export const patchHistorySetService = (
+  id: string,
+  title: string
+): Promise<ApiEnvelope<HistorySetResponse>> => {
+  return apiClient<HistorySetResponse>(API_ROUTES.historySetId(id), {
+    method: "PATCH",
+    body: { title },
+  });
+};
+
+export const deleteHistorySetService = (
+  id: string
+): Promise<ApiEnvelope<DeleteResponse>> => {
+  return apiClient<DeleteResponse>(API_ROUTES.historySetId(id), {
+    method: "DELETE",
+  });
+};

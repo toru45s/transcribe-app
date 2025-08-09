@@ -3,8 +3,8 @@ import {
   ACCESS_TOKEN_KEY,
   COOKIE_OPTIONS,
   REFRESH_TOKEN_KEY,
-} from "@/constants/auth";
-import { HTTP_STATUS } from "@/constants/http";
+} from "@/bff/constants/auth";
+import { HTTP_STATUS } from "@/shared/constants/http";
 
 export async function POST() {
   const response = new NextResponse(null, { status: HTTP_STATUS.NO_CONTENT });

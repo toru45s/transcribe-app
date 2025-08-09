@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/auth";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/bff/constants/auth";
 
 export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get(ACCESS_TOKEN_KEY)?.value;

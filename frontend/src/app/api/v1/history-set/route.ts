@@ -1,6 +1,6 @@
-import { API_ROOT_V1 } from "@/config";
-import { apiClient } from "@/lib/bff/api-client";
-import { networkErrorResponse } from "@/lib/bff/response";
+import { API_ROOT_V1 } from "@/shared/constants/config";
+import { apiClient } from "@/shared/lib/bff/api-client";
+import { networkErrorResponse } from "@/shared/lib/bff/response";
 
 export async function GET() {
   try {
