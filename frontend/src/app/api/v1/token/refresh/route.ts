@@ -11,8 +11,8 @@ import {
   ERROR_MESSAGES,
   HTTP_STATUS,
 } from "@/shared/constants/http";
-import { networkErrorResponse } from "@/shared/lib/bff/response";
-import { apiClient } from "@/shared/lib/bff/api-client";
+import { networkErrorResponse } from "@/bff/lib/response";
+import { apiClient } from "@/bff/lib/api-client";
 
 export async function POST() {
   const cookieStore = await cookies();

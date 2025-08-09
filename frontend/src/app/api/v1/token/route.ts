@@ -5,8 +5,8 @@ import {
   COOKIE_OPTIONS,
   REFRESH_TOKEN_KEY,
 } from "@/bff/constants/auth";
-import { networkErrorResponse } from "@/shared/lib/bff/response";
-import { apiClient } from "@/shared/lib/bff/api-client";
+import { networkErrorResponse } from "@/bff/lib/response";
+import { apiClient } from "@/bff/lib/api-client";
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();

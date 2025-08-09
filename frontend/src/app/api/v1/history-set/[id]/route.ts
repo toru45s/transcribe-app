@@ -1,6 +1,6 @@
 import { API_ROOT_V1 } from "@/shared/constants/config";
-import { apiClient } from "@/shared/lib/bff/api-client";
-import { networkErrorResponse } from "@/shared/lib/bff/response";
+import { apiClient } from "@/bff/lib/api-client";
+import { networkErrorResponse } from "@/bff/lib/response";
 
 type Params = { params: { id: string } };
 

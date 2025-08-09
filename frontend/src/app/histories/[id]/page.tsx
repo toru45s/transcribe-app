@@ -3,8 +3,6 @@ import { Flex } from "@/client/components/flex";
 import { Header } from "@/client/components/header";
 import { Heading } from "@/client/components/heading";
 import { SubtitleLog } from "@/client/components/subtitle-log";
-import { getHistories } from "@/actions/histories";
-import { getHistorySet } from "@/actions/history-set";
 import { ButtonEditHistorySet } from "@/features/history-set/components/button-edit-history-set";
 import { ButtonDeleteHistorySet } from "@/features/history-set/components/button-delete-history-set";
 import { Text } from "@/client/components/text";
