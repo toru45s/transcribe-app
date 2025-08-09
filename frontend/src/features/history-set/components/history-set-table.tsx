@@ -16,42 +16,11 @@ import { Flex } from "@/client/components/flex";
 import { ButtonEditHistorySet } from "@/features/history-set/components/button-edit-history-set";
 import { ButtonDeleteHistorySet } from "@/features/history-set/components/button-delete-history-set";
 import { Text } from "@/client/components/text";
-import { useEffect, useState } from "react";
-
-type HistorySet = {
-  id: string;
-  title: string;
-  created_at: string;
-};
+import { useHistorySetTable } from "@/features/history-set/hooks/use-history-set-table";
+import { DATE_FORMAT } from "@/features/history-set/constants/history-set-constants";
 
 export const HistorySetTable = () => {
-  const [historySetList, setHistorySetList] = useState<HistorySet[]>([]);
-
-  const fetchHistorySetList = async () => {
-    try {
-      const response = await fetch(`/api/v1/history-set/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      console.log("response", response);
-
-      const { data, error } = await response.json();
-      console.log("data", data);
-      console.log("error", error);
-      setHistorySetList(data);
-    } catch (error) {
-      console.log("error", error);
-      setHistorySetList([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchHistorySetList();
-  }, []);
+  const { historySetList } = useHistorySetTable();
 
   return (
     <Table>
@@ -76,7 +45,7 @@ export const HistorySetTable = () => {
                 </Link>
               </TableCell>
               <TableCell>
-                {dayjs(historySet?.created_at).format("YYYY-MM-DD HH:mm")}
+                {dayjs(historySet?.created_at).format(DATE_FORMAT)}
               </TableCell>
               <TableCell>
                 <Flex gap="small" align="center" justify="end">

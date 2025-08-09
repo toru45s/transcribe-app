@@ -25,8 +25,9 @@ import {
 } from "@/client/components/ui/drawer";
 import { Input } from "@/client/components/ui/input";
 import { Label } from "@/client/components/ui/label";
+import { DESKTOP_BREAKPOINT } from "@/client/constants/global";
 
-export function DrawerDialogDemo() {
+export function LoginDialog() {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
 

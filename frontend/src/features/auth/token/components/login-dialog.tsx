@@ -21,13 +21,11 @@ import {
   DrawerTitle,
 } from "@/client/components/ui/drawer";
 
-import { useLoginDialogStore } from "@/features/auth/token/stores/use-login-dialog-store";
 import { LoginForm } from "@/features/auth/token/components/login-form";
-import { DESKTOP_BREAKPOINT } from "@/client/constants/global";
+import { useLoginDialog } from "@/features/auth/token/hooks/use-login-dialog";
 
 export function LoginDialog() {
-  const { isOpen, onClose } = useLoginDialogStore();
-  const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
+  const { isOpen, onClose, isDesktop } = useLoginDialog();
 
   if (isDesktop) {
     return (

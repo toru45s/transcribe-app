@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import {
   Tabs,
   TabsContent,
@@ -12,70 +11,28 @@ import { Text } from "@/client/components/text";
 import { Contents } from "@/client/components/contents";
 
 import { TAB_KEYS } from "@/features/transcript/constants/transcript-constants";
-import React, { useState } from "react";
-import { useHandleWebSocket } from "@/features/transcript/hooks/use-handle-web-socket";
 import { ReadyState } from "react-use-websocket";
-import { useAudioStream } from "@/features/transcript/hooks/use-audio-stream";
 import { Pause, Play, Square } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
 import { cn } from "@/client/lib/utils";
 import { GREEN_COLOR_CLASS, RED_COLOR_CLASS } from "@/client/constants/global";
 import { SubtitleLog } from "@/client/components/subtitle-log";
 
-import { useUserStore } from "@/features/auth/me/stores/use-user-store";
+import { useTranscriptionTab } from "@/features/transcript/hooks/use-transcription-tab";
 
 export const TranscriptionTab = () => {
-  const [tab, setTab] = useState(TAB_KEYS.LIVE);
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  const { isAuthenticated } = useUserStore();
-
   const {
+    tab,
+    setTab,
+    bottomRef,
     transcript,
     transcripts,
     isRecording,
-    onOpenWebSocket,
-    onCloseWebSocket,
-    onMessageWebSocket,
-    onErrorWebSocket,
-    startRecording,
-    stopRecording,
-    audioData,
-  } = useAudioStream();
-
-  const {
-    onStartWebSocket,
-    onStopWebSocket,
-    connectionStatus,
+    onStartTranscription,
+    onStopTranscription,
     readyState,
-    sendMessage,
-  } = useHandleWebSocket({
-    onOpen: onOpenWebSocket,
-    onClose: onCloseWebSocket,
-    onMessage: onMessageWebSocket,
-    onError: onErrorWebSocket,
-  });
-
-  const onStartTranscription = async () => {
-    if (isAuthenticated) {
-      // const title = `Subtitle of ${dayjs().format(DATE_FORMAT)}`;
-    }
-
-    await onStartWebSocket();
-    startRecording();
-  };
-
-  const onStopTranscription = async () => {
-    await onStopWebSocket();
-    stopRecording();
-  };
-
-  useEffect(() => {
-    if (audioData) {
-      console.log("audioData", audioData);
-      sendMessage(audioData);
-    }
-  }, [audioData, sendMessage]);
+    connectionStatus,
+  } = useTranscriptionTab();
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="flex-1">

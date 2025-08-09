@@ -10,29 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
-import { useUserStore } from "@/features/auth/me/stores/use-user-store";
-import { useLogoutAlertStore } from "@/features/auth/token/stores/use-login-alert-store";
-import { useSideMenuStore } from "@/client/stores/use-side-menu-store";
-import { useRouter } from "next/navigation";
-import { logoutService } from "@/features/auth/token/services/logout-services";
+import { useLogoutAlert } from "@/features/auth/token/hooks/use-logout-alert";
 
 export const LogoutAlert = () => {
-  const { isOpen, onClose: onCloseLogoutAlert } = useLogoutAlertStore();
-  const { onClose: onCloseSideMenu } = useSideMenuStore();
-  const { logout } = useUserStore();
-  const router = useRouter();
-
-  const onClickLogout = async () => {
-    onCloseSideMenu();
-    onCloseLogoutAlert();
-    router.push("/logged-out");
-
-    logout();
-    await logoutService();
-  };
-
+  const { isOpen, onClickLogout } = useLogoutAlert();
   return (
-    <AlertDialog open={isOpen} onOpenChange={onCloseLogoutAlert}>
+    <AlertDialog open={isOpen} onOpenChange={onClickLogout}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Logout</AlertDialogTitle>

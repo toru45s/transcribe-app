@@ -10,35 +10,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
-import { useAlertDeleteHistorySetStore } from "@/features/history-set/stores/use-alert-delete-history-set-store";
-// import { deleteHistorySet } from "@/actions/history-set";
-import { toast } from "sonner";
 import { Button } from "@/client/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useAlertDeleteHistorySet } from "../hooks/use-alert-delete-history-set";
 
 export const AlertDeleteHistorySet = () => {
-  const router = useRouter();
-
-  const {
-    isOpen,
-    onClose: onCloseDeleteHistorySetAlert,
-    historySetId,
-    historySetTitle,
-  } = useAlertDeleteHistorySetStore();
-
-  const onClickDeleteHistorySet = async () => {
-    try {
-      // await deleteHistorySet({ historySetId });
-      toast.success("History set deleted successfully");
-      router.push("/histories");
-    } catch (error) {
-      console.error("Error deleting history set:", error);
-      toast.error("Error deleting history set");
-    }
-  };
+  const { isOpen, historySetTitle, onClickDeleteHistorySet, onClose } =
+    useAlertDeleteHistorySet();
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={onCloseDeleteHistorySetAlert}>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete {historySetTitle}</AlertDialogTitle>

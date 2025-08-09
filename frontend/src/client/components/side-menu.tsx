@@ -12,7 +12,7 @@ import { Button } from "@/client/components/ui/button";
 import { useSideMenuStore } from "@/client/stores/use-side-menu-store";
 import { useRegisterDialogStore } from "@/features/auth/register/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/features/auth/token/stores/use-login-dialog-store";
-import { useLogoutAlertStore } from "@/features/auth/token/stores/use-login-alert-store";
+import { useLogoutAlertStore } from "@/features/auth/token/stores/use-logout-alert-store";
 import { KEY_COLOR_CLASS } from "@/client/constants/global";
 import { Link } from "@/client/components/link";
 import { cn } from "@/client/lib/utils";
