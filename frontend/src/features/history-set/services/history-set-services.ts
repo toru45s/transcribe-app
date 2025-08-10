@@ -1,10 +1,8 @@
-import { apiClient } from "@/shared/lib/api-client";
+import { apiClient } from "@/client/lib/api";
 import { ApiEnvelope } from "@/client/types/api";
-import {
-  HistorySetResponse,
-  DeleteResponse,
-} from "@/shared/types/client/responses";
-import { API_ROUTES } from "@/client/constants/routes";
+import { HistorySetResponse } from "@/features/transcript/types/transcript";
+import { API_ROUTES } from "@/client/constants/api";
+import { DeleteResponse } from "@/client/types/api";
 
 export const listHistorySetService = (): Promise<
   ApiEnvelope<HistorySetResponse[]>

@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-
-import { useMediaQuery } from "@/client/hooks/use-media-query";
 import { Button } from "@/client/components/ui/button";
 import {
   Dialog,

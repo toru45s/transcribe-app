@@ -5,30 +5,37 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/client/components/ui/breadcrumb";
 import { Fragment } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 type BreadcrumbProps = {
   items: {
     label: string;
     href: string;
   }[];
+  isLoading?: boolean;
 };
 
-export const Breadcrumb = ({ items }: BreadcrumbProps) => {
+export const Breadcrumb = ({ items, isLoading }: BreadcrumbProps) => {
   return (
-    <BreadcrumbUI>
+    <BreadcrumbUI className="pb-4">
       <BreadcrumbList>
         {items?.map((item, index) => (
           <Fragment key={item.label}>
-            {index === 0 && <BreadcrumbSeparator className="ml-2" />}
-            <BreadcrumbItem key={item.label}>
-              <BreadcrumbLink asChild>
-                <Link href={item.href}>{item.label}</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+            {index === items.length - 1 && isLoading ? (
+              <Skeleton className="h-4 w-[100px]" />
+            ) : (
+              <>
+                <BreadcrumbItem key={item.label}>
+                  <BreadcrumbLink asChild>
+                    <Link href={item.href}>{item.label}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </>
+            )}
+
             {index !== items.length - 1 && <BreadcrumbSeparator />}
           </Fragment>
         ))}

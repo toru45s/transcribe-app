@@ -5,7 +5,15 @@ export type Options = {
   timeoutMs?: number;
 };
 
+export type ResponseError = {
+  code?: string;
+  message: string;
+  details?: unknown;
+};
+
+export type DeleteResponse = null;
+
 export type ApiEnvelope<T> = {
   data: T | null;
-  error: { code?: string; message: string; details?: unknown } | null;
+  error: ResponseError | null;
 };

@@ -7,4 +7,3 @@ export type RefreshTokenResponse = {
   access: string;
 };
 
-export type DeleteResponse = null;

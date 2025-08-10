@@ -13,7 +13,7 @@ import { Input } from "@/client/components/ui/input";
 import { useRegisterForm } from "@/features/auth/register/hooks/use-register-form";
 
 export function RegisterForm() {
-  const { form, onSubmit, isLoading } = useRegisterForm();
+  const { form, onSubmit } = useRegisterForm();
 
   return (
     <Form {...form}>
@@ -75,7 +75,11 @@ export function RegisterForm() {
           )}
         />
 
-        <Button type="submit" className="w-full md:w-auto" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full md:w-auto"
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+        >
           Register
         </Button>
       </form>

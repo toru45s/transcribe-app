@@ -1,16 +1,8 @@
-"use client";
-
 import { Heading } from "@/client/components/heading";
-import { DESKTOP_BREAKPOINT, KEY_COLOR_CLASS } from "@/client/constants/global";
+import { KEY_COLOR_CLASS } from "@/client/constants/global";
 import { Link } from "@/client/components/link";
-import { Breadcrumb } from "@/client/components/breadcrumb";
 import { Flex } from "@/client/components/flex";
-import { useMediaQuery } from "@/client/hooks/use-media-query";
 import { ButtonHandleSidemenu } from "@/client/components/button-handle-sidemenu";
-
-type HeaderProps = {
-  breadcrumbItems?: { label: string; href: string }[];
-};
 
 /**
  * Header component for the Live Transcription App.
@@ -22,9 +14,7 @@ type HeaderProps = {
  * @param {Object[]} [props.breadcrumbItems] - The breadcrumb items to display.
  * @returns {JSX.Element} The rendered header component.
  */
-export const Header = ({ breadcrumbItems }: HeaderProps) => {
-  const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
-
+export const Header = () => {
   return (
     <div className="sticky top-0 flex justify-between items-center py-4">
       <Flex gap="small" align="center" justify="center">
@@ -33,8 +23,6 @@ export const Header = ({ breadcrumbItems }: HeaderProps) => {
             Subtitles
           </Heading>
         </Link>
-
-        {breadcrumbItems && isDesktop && <Breadcrumb items={breadcrumbItems} />}
       </Flex>
 
       <div className="flex items-center gap-2">

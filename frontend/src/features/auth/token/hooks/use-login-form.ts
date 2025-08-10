@@ -7,11 +7,8 @@ import { useLoginDialogStore } from "@/features/auth/token/stores/use-login-dial
 import { loginService } from "@/features/auth/token/services/login-services";
 import { toast } from "sonner";
 import { meService } from "@/features/auth/me/services/me-services";
-import { useState } from "react";
 
 export function useLoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -24,9 +21,6 @@ export function useLoginForm() {
   const { onClose } = useLoginDialogStore();
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    if (isLoading) return;
-    setIsLoading(true);
-
     const fail = (msg = "Login failed.", desc = "Please try again.") => {
       form.setError("email", {});
       form.setError("password", {});
@@ -58,14 +52,11 @@ export function useLoginForm() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : undefined;
       fail("Login failed.", msg ?? "Please try again.");
-    } finally {
-      setIsLoading(false);
     }
   }
 
   return {
     form,
     onSubmit,
-    isLoading,
   };
 }

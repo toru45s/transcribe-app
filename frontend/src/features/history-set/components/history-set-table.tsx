@@ -17,52 +17,72 @@ import { ButtonEditHistorySet } from "@/features/history-set/components/button-e
 import { ButtonDeleteHistorySet } from "@/features/history-set/components/button-delete-history-set";
 import { Text } from "@/client/components/text";
 import { useHistorySetTable } from "@/features/history-set/hooks/use-history-set-table";
-import { DATE_FORMAT } from "@/features/history-set/constants/history-set-constants";
+import {
+  DATE_FORMAT,
+  SKELETON_LENGTH,
+} from "@/features/history-set/constants/history-set-constants";
+import { Skeleton } from "@/client/components/ui/skeleton";
 
 export const HistorySetTable = () => {
-  const { historySetList } = useHistorySetTable();
+  const { historySetList, isLoading } = useHistorySetTable();
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Subtitle</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>
-            <Flex gap="small" align="center" justify="end">
-              Edit / Delete
-            </Flex>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {historySetList?.length > 0 ? (
-          historySetList?.map((historySet) => (
-            <TableRow key={historySet.id}>
-              <TableCell>
-                <Link href={`/histories/${historySet.id}`}>
-                  {historySet?.title}
-                </Link>
-              </TableCell>
-              <TableCell>
-                {dayjs(historySet?.created_at).format(DATE_FORMAT)}
-              </TableCell>
-              <TableCell>
-                <Flex gap="small" align="center" justify="end">
-                  <ButtonEditHistorySet historySet={historySet} />
-                  <ButtonDeleteHistorySet historySet={historySet} />
-                </Flex>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Subtitle</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>
+              <Flex gap="small" align="center" justify="end">
+                Edit / Delete
+              </Flex>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {isLoading ? (
+            Array.from({ length: SKELETON_LENGTH }).map((_, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <Skeleton className="h-4 " />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 " />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 " />
+                </TableCell>
+              </TableRow>
+            ))
+          ) : historySetList.length > 0 ? (
+            historySetList.map((historySet) => (
+              <TableRow key={historySet.id}>
+                <TableCell>
+                  <Link href={`/histories/${historySet.id}`}>
+                    {historySet?.title}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {dayjs(historySet?.created_at).format(DATE_FORMAT)}
+                </TableCell>
+                <TableCell>
+                  <Flex gap="small" align="center" justify="end">
+                    <ButtonEditHistorySet historySet={historySet} />
+                    <ButtonDeleteHistorySet historySet={historySet} />
+                  </Flex>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={3}>
+                <Text isGray>No histories found</Text>
               </TableCell>
             </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={3}>
-              <Text isGray>No histories found</Text>
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
 };

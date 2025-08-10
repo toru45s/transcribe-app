@@ -1,30 +1,40 @@
 import { HistorySetResponse } from "@/features/transcript/types/transcript";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { ResponseError } from "@/client/types/api";
+import { listHistorySetService } from "@/features/history-set/services/history-set-services";
 
 export const useHistorySetTable = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [historySetList, setHistorySetList] = useState<HistorySetResponse[]>(
     []
   );
 
   const fetchHistorySetList = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+
     try {
-      const response = await fetch(`/api/v1/history-set/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+      const { data, error } = await listHistorySetService();
+
+      if (error) {
+        toast.error("Failed to fetch history set list.", {
+          description: error?.message,
+        });
+
+        return;
+      }
+
+      setHistorySetList(data as HistorySetResponse[]);
+    } catch (error) {
+      const responseError = error as ResponseError;
+      toast.error("Failed to fetch history set list.", {
+        description: String(responseError?.message),
       });
 
-      console.log("response", response);
-
-      const { data, error } = await response.json();
-      console.log("data", data);
-      console.log("error", error);
-      setHistorySetList(data);
-    } catch (error) {
-      console.log("error", error);
       setHistorySetList([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -32,5 +42,5 @@ export const useHistorySetTable = () => {
     fetchHistorySetList();
   }, []);
 
-  return { historySetList, fetchHistorySetList };
+  return { historySetList, isLoading, fetchHistorySetList };
 };

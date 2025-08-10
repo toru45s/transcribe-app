@@ -1,7 +1,7 @@
-import { apiClient } from "@/shared/lib/api-client";
 import { ApiEnvelope } from "@/client/types/api";
-import { HistoryResponse } from "@/shared/types/client/responses";
-import { API_ROUTES } from "@/client/constants/routes";
+import { HistoryResponse } from "@/features/transcript/types/transcript";
+import { API_ROUTES } from "@/client/constants/api";
+import { apiClient } from "@/client/lib/api";
 
 export const listHistoryService = (
   id: string

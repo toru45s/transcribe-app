@@ -3,16 +3,12 @@
 import { Button } from "@/client/components/ui/button";
 import { Pen } from "lucide-react";
 import { useDialogEditHistoryStore } from "@/features/history-set/stores/use-dialog-edit-history-store";
-
-type HistorySet = {
-  id: string;
-  title: string;
-};
+import { HistorySetResponse } from "@/features/history-set/types/history-set";
 
 export const ButtonEditHistorySet = ({
   historySet,
 }: {
-  historySet: HistorySet;
+  historySet: HistorySetResponse;
 }) => {
   const { onOpen: onOpenEditHistorySet } = useDialogEditHistoryStore();
 

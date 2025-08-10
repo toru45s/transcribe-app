@@ -14,6 +14,7 @@ import { useLogoutAlert } from "@/features/auth/token/hooks/use-logout-alert";
 
 export const LogoutAlert = () => {
   const { isOpen, onClickLogout } = useLogoutAlert();
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClickLogout}>
       <AlertDialogContent>

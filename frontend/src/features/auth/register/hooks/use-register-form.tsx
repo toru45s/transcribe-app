@@ -6,10 +6,8 @@ import { toast } from "sonner";
 import { useRegisterDialogStore } from "@/features/auth/register/stores/use-register-dialog-store";
 import { useLoginDialogStore } from "@/features/auth/token/stores/use-login-dialog-store";
 import { registerSchema } from "@/features/auth/register/schemas/register-schema";
-import { useState } from "react";
 
 export function useRegisterForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const { onClose } = useRegisterDialogStore();
   const { onOpen } = useLoginDialogStore();
 
@@ -23,9 +21,6 @@ export function useRegisterForm() {
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
-    if (isLoading) return;
-    setIsLoading(true);
-
     try {
       const { error } = await registerService(values.email, values.password);
 
@@ -55,14 +50,11 @@ export function useRegisterForm() {
       form.setError("email", { type: "server" });
       form.setError("password", { type: "server" });
       form.setError("password_confirmation", { type: "server" });
-    } finally {
-      setIsLoading(false);
     }
   }
 
   return {
     form,
     onSubmit,
-    isLoading,
   };
 }

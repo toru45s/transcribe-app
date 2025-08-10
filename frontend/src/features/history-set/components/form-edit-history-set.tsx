@@ -1,8 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/client/components/ui/button";
 import {
   Form,
@@ -13,58 +10,10 @@ import {
   FormMessage,
 } from "@/client/components/ui/form";
 import { Input } from "@/client/components/ui/input";
-import { toast } from "sonner";
-import { useDialogEditHistoryStore } from "@/features/history-set/stores/use-dialog-edit-history-store";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title is required.",
-  }),
-});
+import { useFormEditHistorySet } from "../hooks/use-form-edit-history-set";
 
 export function FormEditHistorySet() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-    },
-  });
-
-  const { historySetId, historySetTitle, onClose } =
-    useDialogEditHistoryStore();
-  const router = useRouter();
-  useEffect(() => {
-    form.setValue("title", historySetTitle || "");
-  }, [historySetTitle, form]);
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      console.log("formData onSubmit", formData);
-      if (!historySetId) throw new Error("History set ID is required");
-
-      // await updateHistorySet({
-      //   historySetId: historySetId,
-      //   formData,
-      // });
-
-      onClose();
-      toast.success("History set updated successfully.");
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      form.setError("title", {
-        message: "Error updating history set.",
-      });
-
-      toast.error("Error updating history set.", {
-        description: "Please try again.",
-      });
-    }
-  }
+  const { form, onSubmit } = useFormEditHistorySet();
 
   return (
     <Form {...form}>
@@ -77,7 +26,7 @@ export function FormEditHistorySet() {
               <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Lecture for AI ethical uses"
+                  placeholder="subtitle title"
                   {...field}
                   type="text"
                   autoComplete="title"
@@ -88,7 +37,11 @@ export function FormEditHistorySet() {
           )}
         />
 
-        <Button type="submit" className="w-full md:w-auto">
+        <Button
+          type="submit"
+          className="w-full md:w-auto"
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+        >
           Save
         </Button>
       </form>

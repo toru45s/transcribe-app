@@ -13,7 +13,7 @@ import { Input } from "@/client/components/ui/input";
 import { useLoginForm } from "@/features/auth/token/hooks/use-login-form";
 
 export function LoginForm() {
-  const { form, onSubmit, isLoading } = useLoginForm();
+  const { form, onSubmit } = useLoginForm();
 
   return (
     <Form {...form}>
@@ -56,7 +56,11 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" className="w-full md:w-auto" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full md:w-auto"
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+        >
           Login
         </Button>
       </form>

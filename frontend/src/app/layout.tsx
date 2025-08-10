@@ -6,6 +6,7 @@ import { LoginDialog } from "@/features/auth/token/components/login-dialog";
 import { LogoutAlert } from "@/features/auth/token/components/logout-alert";
 import { SideMenu } from "@/client/components/side-menu";
 import { Toaster } from "@/client/components/ui/sonner";
+import { AlertInvalidToken } from "@/client/components/alert-invalid-token";
 import { AlertDeleteHistorySet } from "@/features/history-set/components/alert-delete-history-set";
 import { DialogEditHistorySet } from "@/features/history-set/components/dialog-edit-history-set";
 
@@ -44,9 +45,10 @@ export default function RootLayout({
         <RegisterDialog />
         <LoginDialog />
         <LogoutAlert />
-        <Toaster />
         <AlertDeleteHistorySet />
         <DialogEditHistorySet />
+        <Toaster />
+        <AlertInvalidToken />
       </body>
     </html>
   );

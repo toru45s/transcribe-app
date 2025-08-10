@@ -2,7 +2,6 @@
 
 import * as React from "react";
 
-import { useMediaQuery } from "@/client/hooks/use-media-query";
 import { Button } from "@/client/components/ui/button";
 import {
   Dialog,
@@ -21,13 +20,11 @@ import {
   DrawerTitle,
 } from "@/client/components/ui/drawer";
 
-import { DESKTOP_BREAKPOINT } from "@/client/constants/global";
-import { useDialogEditHistoryStore } from "@/features/history-set/stores/use-dialog-edit-history-store";
 import { FormEditHistorySet } from "@/features/history-set/components/form-edit-history-set";
+import { useDialogEditHistorySet } from "@/features/history-set/hooks/use-dialog-edit-history-set";
 
 export function DialogEditHistorySet() {
-  const { isOpen, onClose } = useDialogEditHistoryStore();
-  const isDesktop = useMediaQuery(DESKTOP_BREAKPOINT);
+  const { isOpen, onClose, isDesktop } = useDialogEditHistorySet();
 
   if (isDesktop) {
     return (
