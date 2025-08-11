@@ -11,10 +11,13 @@ export const listHistoryService = (
   });
 };
 
-export const postHistoryService = (
-  id: string,
-  content: string
-): Promise<ApiEnvelope<HistoryResponse>> => {
+export const createHistoryService = ({
+  id,
+  content,
+}: {
+  id: string;
+  content: string;
+}): Promise<ApiEnvelope<HistoryResponse>> => {
   return apiClient<HistoryResponse>(API_ROUTES.history(id), {
     method: "POST",
     body: { content },

@@ -13,7 +13,7 @@ import {
   HistorySetResponse,
 } from "@/features/transcript/types/transcript";
 import { toast } from "sonner";
-import { listHistoryService } from "@/features/history-set/services/history-services";
+import { listHistoryService } from "@/features/history/services/history-services";
 import { Skeleton } from "@/client/components/ui/skeleton";
 import { SKELETON_LENGTH } from "@/features/history/constants/history-constants";
 import { Breadcrumb } from "@/client/components/breadcrumb";

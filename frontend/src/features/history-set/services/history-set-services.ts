@@ -20,9 +20,11 @@ export const retrieveHistorySetService = (
   });
 };
 
-export const postHistorySetService = (
-  title: string
-): Promise<ApiEnvelope<HistorySetResponse>> => {
+export const createHistorySetService = ({
+  title,
+}: {
+  title: string;
+}): Promise<ApiEnvelope<HistorySetResponse>> => {
   return apiClient<HistorySetResponse>(API_ROUTES.historySet, {
     method: "POST",
     body: { title },

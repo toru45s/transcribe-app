@@ -57,18 +57,6 @@ export const SideMenu = () => {
     onOpenLogoutAlert();
   };
 
-  const onClickRefreshToken = async () => {
-    try {
-      const { data } = await refreshTokenService();
-
-      if (data?.access) {
-        console.log("access", data.access);
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent>
@@ -105,9 +93,6 @@ export const SideMenu = () => {
             <>
               <Button onClick={onClickLogout} variant="outline">
                 Logout
-              </Button>
-              <Button onClick={onClickRefreshToken} variant="outline">
-                Refresh Token
               </Button>
             </>
           ) : (

@@ -1,6 +1,36 @@
 import { ApiEnvelope, Options } from "@/client/types/api";
 import { TIMEOUT_MS } from "@/client/constants/api";
-import { ERROR_CODES, ERROR_MESSAGES } from "@/shared/constants/http";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES,
+  HTTP_STATUS,
+} from "@/shared/constants/http";
+import { refreshTokenService } from "@/features/auth/token/services/refresh-token-services";
+import { logoutService } from "@/features/auth/token/services/logout-services";
+import { useUserStore } from "@/features/auth/me/stores/use-user-store";
+import { useAlertInvalidTokenStore } from "../stores/use-alert-invalid-token-store";
+
+let refreshingPromise: Promise<boolean> | null = null;
+
+const refreshOnce = async (): Promise<boolean> => {
+  try {
+    const response = await refreshTokenService();
+    if (response.error) return false;
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const ensureRefreshed = async (): Promise<boolean> => {
+  if (!refreshingPromise) {
+    refreshingPromise = refreshOnce().finally(() => {
+      refreshingPromise = null;
+    });
+  }
+  return refreshingPromise;
+};
 
 export const apiClient = async <T = unknown>(
   path: string,
@@ -21,13 +51,27 @@ export const apiClient = async <T = unknown>(
     ...baseHeaders,
   };
 
+  const requestOptions: RequestInit = {
+    method,
+    headers,
+    body: body && shouldSendBody(method) ? JSON.stringify(body) : undefined,
+    signal: ctrl.signal,
+  };
+
   try {
-    const response = await fetch(path, {
-      method,
-      headers,
-      body: body && shouldSendBody(method) ? JSON.stringify(body) : undefined,
-      signal: ctrl.signal,
-    });
+    let response = await fetch(path, requestOptions);
+
+    if (response.status === HTTP_STATUS.UNAUTHORIZED) {
+      const refreshed = await ensureRefreshed();
+
+      if (refreshed) {
+        response = await fetch(path, requestOptions);
+      } else {
+        await logoutService();
+        useUserStore.getState().logout();
+        useAlertInvalidTokenStore.getState().onOpen();
+      }
+    }
 
     const json = (await toJsonSafe(response)) as ApiEnvelope<T> | null;
 
