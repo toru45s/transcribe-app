@@ -12,8 +12,12 @@ import {
 import { Input } from "@/client/components/ui/input";
 import { useFormEditHistorySet } from "../hooks/use-form-edit-history-set";
 
-export function FormEditHistorySet() {
-  const { form, onSubmit } = useFormEditHistorySet();
+type Props = {
+  callback: () => void;
+};
+
+export function FormEditHistorySet({ callback }: Props) {
+  const { form, onSubmit } = useFormEditHistorySet(callback);
 
   return (
     <Form {...form}>

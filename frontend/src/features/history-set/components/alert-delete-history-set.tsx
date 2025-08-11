@@ -13,9 +13,13 @@ import {
 import { Button } from "@/client/components/ui/button";
 import { useAlertDeleteHistorySet } from "../hooks/use-alert-delete-history-set";
 
-export const AlertDeleteHistorySet = () => {
+type Props = {
+  callback: () => void;
+};
+
+export const AlertDeleteHistorySet = ({ callback }: Props) => {
   const { isOpen, historySetTitle, onClickDeleteHistorySet, onClose } =
-    useAlertDeleteHistorySet();
+    useAlertDeleteHistorySet(callback);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>

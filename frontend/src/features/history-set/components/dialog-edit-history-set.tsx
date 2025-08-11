@@ -23,7 +23,11 @@ import {
 import { FormEditHistorySet } from "@/features/history-set/components/form-edit-history-set";
 import { useDialogEditHistorySet } from "@/features/history-set/hooks/use-dialog-edit-history-set";
 
-export function DialogEditHistorySet() {
+type Props = {
+  callback: () => void;
+};
+
+export function DialogEditHistorySet({ callback }: Props) {
   const { isOpen, onClose, isDesktop } = useDialogEditHistorySet();
 
   if (isDesktop) {
@@ -36,7 +40,7 @@ export function DialogEditHistorySet() {
               Please fill in the following information to edit the history set.
             </DialogDescription>
           </DialogHeader>
-          <FormEditHistorySet />
+          <FormEditHistorySet callback={callback} />
         </DialogContent>
       </Dialog>
     );
@@ -52,7 +56,7 @@ export function DialogEditHistorySet() {
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4">
-          <FormEditHistorySet />
+          <FormEditHistorySet callback={callback} />
         </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>

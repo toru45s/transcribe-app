@@ -1,11 +1,8 @@
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAlertDeleteHistorySetStore } from "@/features/history-set/stores/use-alert-delete-history-set-store";
 import { deleteHistorySetService } from "../services/history-set-services";
 
-export const useAlertDeleteHistorySet = () => {
-  const router = useRouter();
-
+export const useAlertDeleteHistorySet = (callback: () => void) => {
   const { isOpen, onClose, historySetTitle, historySetId } =
     useAlertDeleteHistorySetStore();
 
@@ -19,7 +16,7 @@ export const useAlertDeleteHistorySet = () => {
       }
 
       toast.success("History set deleted successfully");
-      router.push("/histories");
+      callback();
     } catch (error) {
       console.error("Error deleting history set:", error);
       toast.error("Error deleting history set");

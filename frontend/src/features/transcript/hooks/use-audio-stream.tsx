@@ -2,6 +2,8 @@
 
 import { useState, useRef } from "react";
 import { convertFloat32ToInt16 } from "@/features/transcript/lib/util";
+import { useStoreData } from "./use-store-data";
+import { useUserStore } from "@/features/auth/me/stores/use-user-store";
 
 export const DATA_TYPE = {
   TRANSCRIPTION: "transcription",
@@ -9,6 +11,10 @@ export const DATA_TYPE = {
 };
 
 export const useAudioStream = () => {
+  const { isAuthenticated } = useUserStore();
+  const { createHistory, createHistorySet, initializeHistorySetId } =
+    useStoreData();
+
   const [transcript, setTranscript] = useState<string>("");
   const [transcripts, setTranscripts] = useState<string[]>([]);
   const [audioData, setAudioData] = useState<ArrayBuffer | null>(null);
@@ -40,6 +46,10 @@ export const useAudioStream = () => {
 
         if (!data.is_partial) {
           setTranscripts((prev) => [...prev, data.content]);
+
+          if (isAuthenticated) {
+            createHistory(data.content);
+          }
         }
         break;
       case DATA_TYPE.SYSTEM:
@@ -75,10 +85,20 @@ export const useAudioStream = () => {
     sourceRef.current = source;
 
     setIsRecording(true);
+
+    initializeHistorySetId();
+
+    if (isAuthenticated) {
+      createHistorySet();
+    }
   };
 
   const stopRecording = () => {
     setTranscripts((prev) => [...prev, transcript]);
+
+    if (isAuthenticated) {
+      createHistory(transcript);
+    }
 
     processorRef.current?.disconnect();
     sourceRef.current?.disconnect();
@@ -89,6 +109,7 @@ export const useAudioStream = () => {
     audioContextRef.current = null;
 
     setIsRecording(false);
+    initializeHistorySetId();
   };
 
   return {

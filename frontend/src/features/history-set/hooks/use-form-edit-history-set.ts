@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { patchHistorySetService } from "../services/history-set-services";
 
-export const useFormEditHistorySet = () => {
+export const useFormEditHistorySet = (callback: () => void) => {
   const form = useForm<z.infer<typeof historySetEditSchema>>({
     resolver: zodResolver(historySetEditSchema),
     defaultValues: {
@@ -42,6 +42,8 @@ export const useFormEditHistorySet = () => {
 
         return;
       }
+
+      callback();
 
       onClose();
       toast.success("History set updated successfully.");

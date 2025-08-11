@@ -16,16 +16,20 @@ import { Flex } from "@/client/components/flex";
 import { ButtonEditHistorySet } from "@/features/history-set/components/button-edit-history-set";
 import { ButtonDeleteHistorySet } from "@/features/history-set/components/button-delete-history-set";
 import { Text } from "@/client/components/text";
-import { useHistorySetTable } from "@/features/history-set/hooks/use-history-set-table";
+
 import {
   DATE_FORMAT,
   SKELETON_LENGTH,
 } from "@/features/history-set/constants/history-set-constants";
 import { Skeleton } from "@/client/components/ui/skeleton";
+import { HistorySetResponse } from "@/features/history-set/types/history-set";
 
-export const HistorySetTable = () => {
-  const { historySetList, isLoading } = useHistorySetTable();
+type Props = {
+  historySetList: HistorySetResponse[];
+  isLoading: boolean;
+};
 
+export const HistorySetTable = ({ historySetList, isLoading }: Props) => {
   return (
     <>
       <Table>

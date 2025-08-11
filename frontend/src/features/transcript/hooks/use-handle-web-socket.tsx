@@ -24,7 +24,6 @@ export const useHandleWebSocket = ({
     onClose,
     onMessage,
     onError,
-    shouldReconnect: (closeEvent) => true,
   });
 
   const onStartWebSocket = () => {

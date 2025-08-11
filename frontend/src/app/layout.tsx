@@ -45,8 +45,6 @@ export default function RootLayout({
         <RegisterDialog />
         <LoginDialog />
         <LogoutAlert />
-        <AlertDeleteHistorySet />
-        <DialogEditHistorySet />
         <Toaster />
         <AlertInvalidToken />
       </body>

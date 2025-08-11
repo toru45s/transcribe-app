@@ -11,8 +11,7 @@ import { Text } from "@/client/components/text";
 import { Contents } from "@/client/components/contents";
 
 import { TAB_KEYS } from "@/features/transcript/constants/transcript-constants";
-import { ReadyState } from "react-use-websocket";
-import { Pause, Play, Square } from "lucide-react";
+import { Play, Square } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
 import { cn } from "@/client/lib/utils";
 import { GREEN_COLOR_CLASS, RED_COLOR_CLASS } from "@/client/constants/global";
@@ -30,7 +29,6 @@ export const TranscriptionTab = () => {
     isRecording,
     onStartTranscription,
     onStopTranscription,
-    readyState,
     connectionStatus,
   } = useTranscriptionTab();
 
@@ -45,15 +43,11 @@ export const TranscriptionTab = () => {
           variant="outline"
           size="icon"
           className={cn("size-8 cursor-pointer", {
-            "bg-accent": isRecording,
+            "bg-accent cursor-not-allowed opacity-50 ": isRecording,
           })}
           onClick={onStartTranscription}
         >
-          {readyState === ReadyState.OPEN ? (
-            <Pause className={cn("size-4", GREEN_COLOR_CLASS)} />
-          ) : (
-            <Play className={cn("size-4", GREEN_COLOR_CLASS)} />
-          )}
+          <Play className={cn("size-4", GREEN_COLOR_CLASS)} />
         </Button>
         <Button
           variant="outline"
@@ -74,23 +68,25 @@ export const TranscriptionTab = () => {
       </TabsContent>
       <TabsContent value={TAB_KEYS.HISTORY} className="flex flex-col">
         <Contents>
-          {transcripts.length === 1 ? (
-            <Text>{transcript}</Text>
-          ) : (
-            <>
-              {transcripts.map((transcript, index) => (
-                <SubtitleLog
-                  sentence={transcript}
-                  key={index}
-                  hasBackground={index % 2 === 0}
-                />
-              ))}
+          {transcripts.length === 0 && (
+            <div className="flex justify-center items-center h-full">
+              <Text isBold>No data yet. Let&apos;s start transcription!</Text>
+            </div>
+          )}
 
-              <div className="flex gap-2 py-4 pb-4 mt-4">
-                <Text>🗣️</Text>
-                <Text isBold>{transcript}</Text>
-              </div>
-            </>
+          {transcripts.map((transcript, index) => (
+            <SubtitleLog
+              sentence={transcript}
+              key={index}
+              hasBackground={index % 2 === 0}
+            />
+          ))}
+
+          {isRecording && (
+            <div className="flex gap-2 py-4 pb-4 mt-4">
+              <Text>🗣️</Text>
+              <Text isBold>{transcript}</Text>
+            </div>
           )}
 
           <div ref={bottomRef} />

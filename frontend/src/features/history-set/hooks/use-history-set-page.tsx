@@ -4,13 +4,13 @@ import { toast } from "sonner";
 import { ResponseError } from "@/client/types/api";
 import { listHistorySetService } from "@/features/history-set/services/history-set-services";
 
-export const useHistorySetTable = () => {
+export const useHistorySetPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [historySetList, setHistorySetList] = useState<HistorySetResponse[]>(
     []
   );
 
-  const fetchHistorySetList = async () => {
+  const fetch = async () => {
     if (isLoading) return;
     setIsLoading(true);
 
@@ -38,9 +38,14 @@ export const useHistorySetTable = () => {
     }
   };
 
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Histories", href: "/histories" },
+  ];
+
   useEffect(() => {
-    fetchHistorySetList();
+    fetch();
   }, []);
 
-  return { historySetList, isLoading, fetchHistorySetList };
+  return { historySetList, isLoading, fetch, breadcrumbItems };
 };
