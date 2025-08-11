@@ -7,8 +7,6 @@ import { LogoutAlert } from "@/features/auth/token/components/logout-alert";
 import { SideMenu } from "@/client/components/side-menu";
 import { Toaster } from "@/client/components/ui/sonner";
 import { AlertInvalidToken } from "@/client/components/alert-invalid-token";
-import { AlertDeleteHistorySet } from "@/features/history-set/components/alert-delete-history-set";
-import { DialogEditHistorySet } from "@/features/history-set/components/dialog-edit-history-set";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +43,7 @@ export default function RootLayout({
         <RegisterDialog />
         <LoginDialog />
         <LogoutAlert />
-        <Toaster />
+        <Toaster position="top-center" richColors />
         <AlertInvalidToken />
       </body>
     </html>

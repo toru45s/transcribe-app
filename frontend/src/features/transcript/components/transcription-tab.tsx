@@ -18,6 +18,7 @@ import { GREEN_COLOR_CLASS, RED_COLOR_CLASS } from "@/client/constants/global";
 import { SubtitleLog } from "@/client/components/subtitle-log";
 
 import { useTranscriptionTab } from "@/features/transcript/hooks/use-transcription-tab";
+import { useAlertInitializeTranscriptionStore } from "@/features/transcript/stores/use-alert-initialize-transcription-store";
 
 export const TranscriptionTab = () => {
   const {
@@ -30,7 +31,10 @@ export const TranscriptionTab = () => {
     onStartTranscription,
     onStopTranscription,
     connectionStatus,
+    resetTranscription,
   } = useTranscriptionTab();
+
+  const { onOpen } = useAlertInitializeTranscriptionStore();
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="flex-1">
@@ -53,7 +57,15 @@ export const TranscriptionTab = () => {
           variant="outline"
           size="icon"
           className={cn("size-8 cursor-pointer")}
-          onClick={onStopTranscription}
+          onClick={() => {
+            if (isRecording) {
+              onStopTranscription();
+            } else {
+              if (transcript || transcripts.length > 0) {
+                onOpen(resetTranscription);
+              }
+            }
+          }}
         >
           <Square className={cn("size-4", RED_COLOR_CLASS)} />
         </Button>

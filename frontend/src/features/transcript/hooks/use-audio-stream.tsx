@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { convertFloat32ToInt16 } from "@/features/transcript/lib/util";
-import { useStoreData } from "./use-store-data";
+import { useHandleTranscriptData } from "@/features/transcript/hooks/use-handle-transcript-data";
 import { useUserStore } from "@/features/auth/me/stores/use-user-store";
 
 export const DATA_TYPE = {
@@ -12,8 +12,7 @@ export const DATA_TYPE = {
 
 export const useAudioStream = () => {
   const { isAuthenticated } = useUserStore();
-  const { createHistory, createHistorySet, initializeHistorySetId } =
-    useStoreData();
+  const { createHistory, initializeHistorySetId } = useHandleTranscriptData();
 
   const [transcript, setTranscript] = useState<string>("");
   const [transcripts, setTranscripts] = useState<string[]>([]);
@@ -32,32 +31,37 @@ export const useAudioStream = () => {
     console.log("WebSocket connection closed", event);
   };
 
-  const onMessageWebSocket = (event: WebSocketEventMap["message"]) => {
-    const { data, error } = JSON.parse(event.data);
-    console.log("data", data);
-    console.log("error", error);
-    // if (error) {
-    //   setTranscripts((prev) => [...prev, `System: ${error.content}`]);
-    // }
+  const onMessageWebSocket = useCallback(
+    (event: WebSocketEventMap["message"]) => {
+      const { data, error } = JSON.parse(event?.data);
 
-    switch (data.type) {
-      case DATA_TYPE.TRANSCRIPTION:
-        setTranscript(data.content);
+      if (!data) return;
 
-        if (!data.is_partial) {
-          setTranscripts((prev) => [...prev, data.content]);
+      if (error) {
+        setTranscript(`Error: ${error.content}`);
+      }
 
-          if (isAuthenticated) {
-            createHistory(data.content);
+      switch (data.type) {
+        case DATA_TYPE.TRANSCRIPTION:
+          setTranscript(data.content);
+
+          if (!data.is_partial) {
+            setTranscripts((prev) => [...prev, data.content]);
+
+            if (isAuthenticated) {
+              createHistory(data.content);
+            }
           }
-        }
-        break;
-      case DATA_TYPE.SYSTEM:
-        setTranscript(data.content);
-        setTranscripts((prev) => [...prev, data.content]);
-        break;
-    }
-  };
+          break;
+
+        case DATA_TYPE.SYSTEM:
+          setTranscript(`System: ${data.content}`);
+
+          break;
+      }
+    },
+    [isAuthenticated, createHistory]
+  );
 
   const onErrorWebSocket = (event: WebSocketEventMap["error"]) => {
     console.log("WebSocket error", event);
@@ -85,12 +89,6 @@ export const useAudioStream = () => {
     sourceRef.current = source;
 
     setIsRecording(true);
-
-    initializeHistorySetId();
-
-    if (isAuthenticated) {
-      createHistorySet();
-    }
   };
 
   const stopRecording = () => {
@@ -112,6 +110,11 @@ export const useAudioStream = () => {
     initializeHistorySetId();
   };
 
+  const resetTranscription = () => {
+    setTranscript("");
+    setTranscripts([]);
+  };
+
   return {
     audioData,
     transcript,
@@ -123,5 +126,6 @@ export const useAudioStream = () => {
     onErrorWebSocket,
     startRecording,
     stopRecording,
+    resetTranscription,
   };
 };

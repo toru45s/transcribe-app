@@ -38,10 +38,10 @@ export const useHandleWebSocket = ({
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "WebSocket Connected",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "WebSocket Closed",
-    [ReadyState.UNINSTANTIATED]: "Welcome to the live transcription app.",
+    [ReadyState.OPEN]: "Connected, Ready to Transcribe.",
+    [ReadyState.CLOSING]: "Closing Connection",
+    [ReadyState.CLOSED]: "Closed Connection, Ready to Transcribe Again.",
+    [ReadyState.UNINSTANTIATED]: "Welcome to the Live Transcription App.",
   }[readyState];
 
   return {

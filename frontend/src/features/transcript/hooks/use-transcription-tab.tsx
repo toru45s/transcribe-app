@@ -5,6 +5,8 @@ import { useUserStore } from "@/features/auth/me/stores/use-user-store";
 import { useAudioStream } from "@/features/transcript/hooks/use-audio-stream";
 import { useHandleWebSocket } from "@/features/transcript/hooks/use-handle-web-socket";
 import { TAB_KEYS } from "@/features/transcript/constants/transcript-constants";
+import { useHandleTranscriptData } from "@/features/transcript/hooks/use-handle-transcript-data";
+import { toast } from "sonner";
 
 export const useTranscriptionTab = () => {
   const [tab, setTab] = useState(TAB_KEYS.LIVE);
@@ -12,6 +14,8 @@ export const useTranscriptionTab = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const { isAuthenticated } = useUserStore();
+  const { createHistorySet, initializeHistorySetId } =
+    useHandleTranscriptData();
 
   const {
     transcript,
@@ -24,6 +28,7 @@ export const useTranscriptionTab = () => {
     startRecording,
     stopRecording,
     audioData,
+    resetTranscription,
   } = useAudioStream();
 
   const {
@@ -42,9 +47,26 @@ export const useTranscriptionTab = () => {
   const onStartTranscription = useCallback(async () => {
     if (isRecording) return;
 
+    if (isAuthenticated) {
+      await initializeHistorySetId();
+      const historySetId = await createHistorySet();
+
+      if (!historySetId) {
+        toast.error("Failed to create history set");
+        return;
+      }
+    }
+
     await onStartWebSocket();
-    startRecording();
-  }, [onStartWebSocket, startRecording, isRecording]);
+    await startRecording();
+  }, [
+    onStartWebSocket,
+    startRecording,
+    isRecording,
+    isAuthenticated,
+    createHistorySet,
+    initializeHistorySetId,
+  ]);
 
   const onStopTranscription = useCallback(async () => {
     if (!isRecording) return;
@@ -72,5 +94,6 @@ export const useTranscriptionTab = () => {
     onStopTranscription,
     readyState,
     connectionStatus,
+    resetTranscription,
   };
 };
